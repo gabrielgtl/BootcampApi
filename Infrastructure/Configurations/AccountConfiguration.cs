@@ -8,9 +8,15 @@ public class AccountConfiguration : IEntityTypeConfiguration<Account>
 {
     public void Configure(EntityTypeBuilder<Account> entity)
     {
-        entity.HasKey(e => e.Id).HasName("Account_pkey");
-        entity.Property(e => e.Number).HasMaxLength(100);
-        entity.Property(e => e.Balance).HasPrecision(20, 5);
+        entity
+            .HasKey(e => e.Id)
+            .HasName("Account_pkey");
+        entity
+            .Property(e => e.Number)
+            .HasMaxLength(100);
+        entity
+            .Property(e => e.Balance)
+            .HasPrecision(20, 5);
 
 
         entity
@@ -29,7 +35,7 @@ public class AccountConfiguration : IEntityTypeConfiguration<Account>
             .HasForeignKey(movement => movement.AccountId);
 
         entity
-            .HasMany(account => account.Movements)
+            .HasMany(account => account.CurrentAccounts)
             .WithOne(currentAccount => currentAccount.Account)
             .HasForeignKey(account => account.AccountId);
 
