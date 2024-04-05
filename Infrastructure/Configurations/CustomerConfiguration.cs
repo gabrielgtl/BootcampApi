@@ -31,7 +31,7 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
             .HasMaxLength(150)
             .IsRequired();
         entity
-            .Property(e => e.Status)
+            .Property(e => e.CustomerStatus)
             .HasMaxLength(100);
         entity
             .Property(e => e.Mail)

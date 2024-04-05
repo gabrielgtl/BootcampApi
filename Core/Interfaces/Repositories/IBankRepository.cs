@@ -1,4 +1,5 @@
 ﻿using Core.Models;
+using Core.Requests;
 
 namespace Core.Interfaces.Repositories;
 

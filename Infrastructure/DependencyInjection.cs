@@ -35,6 +35,7 @@ public static class DependencyInjection
     public static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<IBankRepository, BankRepository>();
+        services.AddScoped<ICustomerRepository, CustomerRepository>();
 
         return services;
     }
@@ -42,6 +43,7 @@ public static class DependencyInjection
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddScoped<IBankService, BankService>();
+        services.AddScoped<ICustomerService, CustomerService>();
 
         return services;
     }

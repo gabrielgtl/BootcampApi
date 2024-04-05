@@ -1,4 +1,4 @@
-﻿namespace Core.Models;
+﻿namespace Core.Requests;
 
 public class UpdateBankModel
 {
