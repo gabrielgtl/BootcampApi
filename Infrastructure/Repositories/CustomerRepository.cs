@@ -5,6 +5,7 @@ using Core.Models;
 using Core.Requests;
 using Infrastructure.Contexts;
 using Infrastructure.Migrations;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
@@ -22,43 +23,27 @@ public class CustomerRepository : ICustomerRepository
     public async Task<CustomerDTO> Add(CreateCustomerModel model)
     {
         var bank = await _context.Banks.FindAsync(model.BankId);
-        var customerToCreate = new Customer
-        {
-            Name = model.Name,
-            Lastname = model.Lastname,
-            DocumentNumber = model.DocumentNumber,
-            Address = model.Address,
-            Mail = model.Mail,
-            Phone = model.Phone,
-            CustomerStatus = (CustomerStatus)Enum.Parse(typeof(CustomerStatus), model.CustomerStatus),
-            BankId = model.BankId,
-            Birth =model.Birth
-        };
+        var customerToCreate = model.Adapt<Customer>();
 
         _context.Customers.Add(customerToCreate);
         await _context.SaveChangesAsync();
 
-        var customerDTO = new CustomerDTO
-        {
-            Id=customerToCreate.Id,
-            Name = customerToCreate.Name,
-            Lastname = customerToCreate.Lastname,
-            DocumentNumber = customerToCreate.DocumentNumber,
-            Address = customerToCreate.Address,
-            Mail = customerToCreate.Mail,
-            Phone = customerToCreate.Phone,
-            CustomerStatus = nameof(customerToCreate.CustomerStatus),
-            Birth = customerToCreate.Birth,
-            Bank = new BankDTO
-            {
-                Id = customerToCreate.Bank.Id,
-                Name = customerToCreate.Bank.Name,
-                Phone = customerToCreate.Bank.Phone,
-                Mail = customerToCreate.Bank.Mail,
-                Address = customerToCreate.Bank.Address
-            }
-        };
+        var customerDTO = customerToCreate.Adapt<CustomerDTO>();
+
         return customerDTO;
+    }
+
+    public async Task<bool> Delete(int id)
+    {
+        var customer = await _context.Customers.FindAsync(id);
+
+        if (customer is null) throw new Exception("Customer not found");
+
+        _context.Customers.Remove(customer);
+
+        var result = await _context.SaveChangesAsync();
+
+        return result > 0;
     }
 
     public async Task<List<CustomerDTO>> GetFiltered(FilterCustomersModel filter)
@@ -110,70 +95,46 @@ public class CustomerRepository : ICustomerRepository
                 x.Birth.Value.Year <= filter.BirthYearTo);
         }
 
+        var result = await query.ToListAsync();
+        var customerDTOs = result.Adapt<List<CustomerDTO>>();
+        return customerDTOs;
+    }
+    public async Task<List<CustomerDTO>> GetAll()
+    {
+        var query = _context.Customers
+            .Include(c => c.Bank)
+            .AsQueryable();
 
         var result = await query.ToListAsync();
+        var customerDTO = result.Adapt<List<CustomerDTO>>();
 
-        return result.Select(x => new CustomerDTO
-        {
-            Id = x.Id,
-            Name = x.Name,
-            Lastname = x.Lastname,
-            DocumentNumber = x.DocumentNumber,
-            Address = x.Address,
-            Mail = x.Mail,
-            Phone = x.Phone,
-            CustomerStatus = nameof(x.CustomerStatus),
-            Birth = x.Birth,
-            Bank = new BankDTO
-            {
-                Id = x.Bank.Id,
-                Name = x.Bank.Name,
-                Phone = x.Bank.Phone,
-                Mail = x.Bank.Mail,
-                Address = x.Bank.Address
-            }
-        }).ToList();
+        return customerDTO;
     }
+    public async Task<CustomerDTO> GetById(int id)
+    {
+        var query = _context.Customers
+            .Include(c => c.Bank)
+            .AsQueryable();
 
+        var customer = await query.FirstOrDefaultAsync(c => c.Id == id);
+
+        if (customer is null)
+            throw new Exception("Customer not found");
+
+        var customerDTO = customer.Adapt<CustomerDTO>();
+
+        return customerDTO;
+    }
     public async Task<CustomerDTO> Update(UpdateCustomerModel model)
     {
         var bank = await _context.Banks.FindAsync(model.BankId);
-        var customerToUpdate = new Customer
-        {
-            Name = model.Name,
-            Lastname = model.Lastname,
-            DocumentNumber = model.DocumentNumber,
-            Address = model.Address,
-            Mail = model.Mail,
-            Phone = model.Phone,
-            CustomerStatus = (CustomerStatus)Enum.Parse(typeof(CustomerStatus), model.CustomerStatus),
-            BankId = model.BankId,
-            Birth = model.Birth
-        };
-
-        _context.Customers.Add(customerToUpdate);
+        var customer = await _context.Customers.FindAsync(model.Id);
+        if (customer is null) throw new Exception("Customer was not found");
+        model.Adapt(customer);
+        _context.Customers.Update(customer);
         await _context.SaveChangesAsync();
 
-        var customerDTO = new CustomerDTO
-        {
-            Id = customerToUpdate.Id,
-            Name = customerToUpdate.Name,
-            Lastname = customerToUpdate.Lastname,
-            DocumentNumber = customerToUpdate.DocumentNumber,
-            Address = customerToUpdate.Address,
-            Mail = customerToUpdate.Mail,
-            Phone = customerToUpdate.Phone,
-            CustomerStatus = nameof(customerToUpdate.CustomerStatus),
-            Birth = customerToUpdate.Birth,
-            Bank = new BankDTO
-            {
-                Id = customerToUpdate.Bank.Id,
-                Name = customerToUpdate.Bank.Name,
-                Phone = customerToUpdate.Bank.Phone,
-                Mail = customerToUpdate.Bank.Mail,
-                Address = customerToUpdate.Bank.Address
-            }
-        };
+        var customerDTO = customer.Adapt<CustomerDTO>();
         return customerDTO;
     }
 }

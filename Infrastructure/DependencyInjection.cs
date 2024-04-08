@@ -1,11 +1,16 @@
 ﻿using Core.Interfaces.Repositories;
 using Core.Interfaces.Services;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Infrastructure.Contexts;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
+using Mapster;
+using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace Infrastructure;
 
@@ -16,6 +21,8 @@ public static class DependencyInjection
         services.AddDatabase(configuration);
         services.AddRepositories();
         services.AddServices();
+        services.AddMapping();
+        services.AddValidation();
 
         return services;
     }
@@ -44,6 +51,25 @@ public static class DependencyInjection
     {
         services.AddScoped<IBankService, BankService>();
         services.AddScoped<ICustomerService, CustomerService>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddMapping(this IServiceCollection services)
+    {
+        var config = TypeAdapterConfig.GlobalSettings;
+        config.Scan(Assembly.GetExecutingAssembly());
+
+        services.AddSingleton(config);
+        services.AddScoped<IMapper, ServiceMapper>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddValidation(this IServiceCollection services)
+    {
+        services.AddFluentValidation();
+        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
         return services;
     }

@@ -2,6 +2,7 @@
 using Core.Interfaces.Services;
 using Core.Requests;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebApi.Controllers;
 
@@ -20,7 +21,7 @@ public class BankController : BaseApiController
         return Ok(await _service.Add(request));
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("GetById/{id}")]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
         var bank = await _service.GetById(id);

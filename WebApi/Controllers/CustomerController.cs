@@ -30,5 +30,22 @@ public class CustomerController : BaseApiController
     {
         return Ok(await _customerService.Update(request));
     }
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete([FromRoute] int id)
+    {
+        return Ok(await _customerService.Delete(id));
+    }
+    [HttpGet("GetById/{id}")]
+    public async Task<IActionResult> GetById([FromRoute] int id)
+    {
+        var customer = await _customerService.GetById(id);
+        return Ok(customer);
+    }
+    [HttpGet("all")]
+    public async Task<IActionResult> GetAll()
+    {
+        var customer = await _customerService.GetAll();
+        return Ok(customer);
+    }
 
 }
