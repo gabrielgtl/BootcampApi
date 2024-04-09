@@ -21,7 +21,7 @@ public class BankController : BaseApiController
         return Ok(await _service.Add(request));
     }
 
-    [HttpGet("GetById/{id}")]
+    [HttpGet("getById/{id}")]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
         var bank = await _service.GetById(id);

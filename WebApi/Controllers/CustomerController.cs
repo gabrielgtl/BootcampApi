@@ -20,12 +20,12 @@ public class CustomerController : BaseApiController
         return Ok(customers);
     }
 
-    [HttpPost("AgregarCustomer")]
+    [HttpPost("agregarCustomer")]
     public  async Task<IActionResult> Create([FromBody] CreateCustomerModel request)
     {
         return Ok(await _customerService.Add(request));
     }
-    [HttpPut("Actualizar")]
+    [HttpPut("actualizar")]
     public async Task<IActionResult> Update([FromBody] UpdateCustomerModel request)
     {
         return Ok(await _customerService.Update(request));
@@ -35,7 +35,7 @@ public class CustomerController : BaseApiController
     {
         return Ok(await _customerService.Delete(id));
     }
-    [HttpGet("GetById/{id}")]
+    [HttpGet("getById/{id}")]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
         var customer = await _customerService.GetById(id);

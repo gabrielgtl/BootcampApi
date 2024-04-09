@@ -1,4 +1,5 @@
-﻿using Core.Interfaces.Repositories;
+﻿using Core.Exceptions;
+using Core.Interfaces.Repositories;
 using Core.Interfaces.Services;
 using Core.Models;
 using Core.Requests;
@@ -20,7 +21,7 @@ public class BankService : IBankService
 
         if (nameIsInUse)
         {
-            throw new Exception("Name is already in use");
+            throw new BusinessLogicException($"Bank name {model.Name} is already on use");
         }
 
         return await _bankRepository.Add(model);

@@ -26,6 +26,7 @@ public partial class BootcampContext : DbContext
     public virtual DbSet<Account> Accounts { get; set; }
 
     public virtual DbSet<CurrentAccount> CurrentAccounts { get; set; }
+    public virtual DbSet<Currency> Currencies { get; set; }   
 
     public virtual DbSet<Movement> Movements { get; set; }
 
@@ -34,6 +35,7 @@ public partial class BootcampContext : DbContext
         modelBuilder.ApplyConfiguration(new AccountConfiguration());
         modelBuilder.ApplyConfiguration(new BankConfiguration());
         modelBuilder.ApplyConfiguration(new CustomerConfiguration());
+        modelBuilder.ApplyConfiguration(new CurrencyConfiguration());
         modelBuilder.ApplyConfiguration(new MovementConfiguration());
         modelBuilder.ApplyConfiguration(new CurrentAccountConfiguration());
         modelBuilder.ApplyConfiguration(new SavingAccountConfiguration());
