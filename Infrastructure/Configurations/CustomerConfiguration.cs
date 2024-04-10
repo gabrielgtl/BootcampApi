@@ -45,5 +45,9 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
             .WithMany(p => p.Customers)
             .HasForeignKey(d => d.BankId);
 
+        entity
+            .HasMany(d => d.Accounts)
+            .WithOne(p => p.Customer)
+            .HasForeignKey(d => d.CustomerId);
     }
 }

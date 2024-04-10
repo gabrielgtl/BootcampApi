@@ -7,4 +7,5 @@ public class Currency
     public decimal BuyValue { get; set; }
     public decimal SellValue { get; set; }
     public ICollection<Account> Accounts { get; set; } = new List<Account>();
+    public ICollection<CreditCard> CreditCards { get; set; } = new List<CreditCard>();
 }
