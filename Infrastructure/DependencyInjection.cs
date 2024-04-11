@@ -16,6 +16,7 @@ namespace Infrastructure;
 
 public static class DependencyInjection
 {
+
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDatabase(configuration);
@@ -45,6 +46,7 @@ public static class DependencyInjection
         services.AddScoped<ICustomerRepository, CustomerRepository>();
         services.AddScoped<ICurrencyRepository, CurrencyRepository>();
         services.AddScoped<ICreditCardRepository, CreditCardRepository>();
+        services.AddScoped<IJwtProvider, JwtProvider>();
 
 
 
