@@ -10,7 +10,8 @@ public class Account
     public AccountType Type { get; set; } = AccountType.Current;
     public decimal Balance { get; set; }
     public AccountStatus Status { get; set; } = AccountStatus.Active;
-
+    public IsDeletedStatus IsDeleted { get; set; } = IsDeletedStatus.False;
+    
     public int CurrencyId { get; set; }
     public Currency Currency { get; set; } = null!;
 

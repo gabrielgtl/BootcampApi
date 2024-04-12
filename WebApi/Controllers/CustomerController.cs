@@ -41,7 +41,8 @@ public class CustomerController : BaseApiController
         return Ok(await _customerService.Delete(id));
     }
     [HttpGet("getById/{id}")]
-    [Authorize(Roles = "Empleado, Admin, Invitado")]
+    //[Authorize(Roles = "Empleado, Admin, Invitado")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
         var customer = await _customerService.GetById(id);

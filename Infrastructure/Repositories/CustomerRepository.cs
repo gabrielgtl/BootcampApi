@@ -114,12 +114,17 @@ public class CustomerRepository : ICustomerRepository
     {
         var query = _context.Customers
             .Include(c => c.Bank)
+            .Include(c => c.Accounts)
+            .ThenInclude(c => c.SavingAccount)
+            .Include(c => c.Accounts)
+            .ThenInclude(c => c.CurrentAccount)
             .AsQueryable();
 
-        var customer = await query.FirstOrDefaultAsync(c => c.Id == id);
+        var customer = await _context.Customers.FindAsync(id);
 
         if (customer is null)
             throw new Exception("Customer not found");
+        var result = await query.ToListAsync();
 
         var customerDTO = customer.Adapt<CustomerDTO>();
 
