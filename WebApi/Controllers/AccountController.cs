@@ -34,6 +34,10 @@ public class AccountController : BaseApiController
         var account = await _accountService.GetFiltered(filter);
         return Ok(account);
     }
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Get(int id)
+        => Ok(await _accountService.GetById(id));
+
     [HttpDelete("{id}")]
     [AllowAnonymous]
     public async Task<IActionResult> Delete([FromRoute] int id)

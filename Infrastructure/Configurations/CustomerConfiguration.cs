@@ -41,7 +41,8 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
             .HasMaxLength(300)
             .IsRequired();
 
-        entity.HasOne(d => d.Bank)
+        entity
+            .HasOne(d => d.Bank)
             .WithMany(p => p.Customers)
             .HasForeignKey(d => d.BankId);
 

@@ -24,9 +24,9 @@ public class AccountService : IAccountService
         return await _accountRepository.Delete(id);
     }
 
-    public Task<AccountDTO> GetById(int id)
+    public async Task<AccountDTO> GetById(int id)
     {
-        throw new NotImplementedException();
+       return await _accountRepository.GetById(id);
     }
 
     public async Task<List<AccountDTO>> GetFiltered(FilterAccountModel filter)

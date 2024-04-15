@@ -47,6 +47,8 @@ public static class DependencyInjection
         services.AddScoped<ICurrencyRepository, CurrencyRepository>();
         services.AddScoped<ICreditCardRepository, CreditCardRepository>();
         services.AddScoped<IAccountRepository, AccountRepository>();
+        services.AddScoped<IBusinessRepository, BusinessRepository>();
+        services.AddScoped<IPromotionRepository, PromotionRepository>();
         services.AddScoped<IJwtProvider, JwtProvider>();
 
 
@@ -61,6 +63,8 @@ public static class DependencyInjection
         services.AddScoped<ICurrencyService, CurrencyService>();
         services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<ICreditCardService, CreditCardService>();
+        services.AddScoped<IBusinessService, BusinessService>();
+        services.AddScoped<IPromotionService, PromotionService>();
 
 
         return services;

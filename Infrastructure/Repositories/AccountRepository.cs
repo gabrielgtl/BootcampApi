@@ -22,59 +22,30 @@ public class AccountRepository : IAccountRepository
     }
     public async Task<AccountDTO> Add(CreateAccountModel model)
     {
-        var customer = await _context.Accounts.FindAsync(model.CustomerId);
-        var currency = await _context.Accounts.FindAsync(model.CurrencyId);
-        var customer2 = await _context.Customers
-        .Include(c => c.Bank)
-        .FirstOrDefaultAsync(c => c.Id == model.CustomerId);
+        var account = model.Adapt<Account>();
 
-        var query = _context.Accounts
-       .Include(c => c.SavingAccount)
-       .Include(c => c.Customer)
-       .Include(c => c.Currency)
-       .AsQueryable();
-        var result = await query.ToListAsync();
-
-        var accountToCreate = model.Adapt<Account>();
-        _context.Accounts.Add(accountToCreate);
-        await _context.SaveChangesAsync();
-
-
-        if (model.Type == "Saving")
+        if (account.Type == AccountType.Saving)
         {
-            var savingAccountDTO = new CreateSavingAccountDTO
-            {
-                AccountId = accountToCreate.Id,
-                HolderName = accountToCreate.Holder,
-                SavingType = model.SavingType
-                
-            };
-            var savingAccount = savingAccountDTO.Adapt<SavingAccount>();
-            _context.SavingAccounts.Add(savingAccount);
+            account.SavingAccount = model.CreateSavingAccount.Adapt<SavingAccount>();
         }
 
-        else if (model.Type == "Current")
+        if (account.Type == AccountType.Current)
         {
-            var currentAccountDTO = new CreateCurrentAccountDTO
-            {
-                AccountId = accountToCreate.Id,
-                OperationalLimit=model.OperationalLimit,
-                MonthAverage=model.MonthAverage,
-                Interest=model.MonthAverage
+            account.CurrentAccount = model.CreateCurrentAccount.Adapt<CurrentAccount>();
+        }
 
-            };
-            var currentAccount = currentAccountDTO.Adapt<CurrentAccount>();
-            _context.CurrentAccounts.Add(currentAccount);
-        }
-        else
-        {
-            throw new Exception("Invalid account type");
-        }
+        _context.Accounts.Add(account);
 
         await _context.SaveChangesAsync();
 
-        var accountDTO = accountToCreate.Adapt<AccountDTO>();
-        return accountDTO;
+        var createdAccount = await _context.Accounts
+            .Include(a => a.Currency)
+            .Include(a => a.Customer)
+            .Include(a => a.SavingAccount)
+            .Include(a => a.CurrentAccount)
+            .FirstOrDefaultAsync(a => a.Id == account.Id);
+
+        return createdAccount.Adapt<AccountDTO>();
     }
 
 
@@ -87,20 +58,29 @@ public class AccountRepository : IAccountRepository
         return result > 0;
     }
 
-    public Task<AccountDTO> GetById(int id)
+    public async Task<AccountDTO> GetById(int id)
     {
-        throw new NotImplementedException();
+        var account = await _context.Accounts
+            .Include(a => a.Currency)
+            .Include(a => a.Customer)
+            .Include(a => a.SavingAccount)
+            .Include(a => a.CurrentAccount)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        if (account is null) throw new NotFoundException($"The account with id: {id} doest not exist");
+
+        return account.Adapt<AccountDTO>();
     }
 
     public async Task<List<AccountDTO>> GetFiltered(FilterAccountModel filter)
     {
         var query = _context.Accounts
-            .Include(c => c.Customer)
-            .ThenInclude(customer => customer.Bank)
-            .Include(c => c.Currency)
-            .Include(c => c.CurrentAccount)
-            .Include(c => c.SavingAccount)
-            .AsQueryable();
+                   .Include(a => a.Currency)
+                   .Include(a => a.Customer)
+                   .ThenInclude(a=>a.Bank)
+                   .Include(a => a.SavingAccount)
+                   .Include(a => a.CurrentAccount)
+                   .AsQueryable();
 
         if (filter.CurrencyId is not null)
         {
@@ -108,15 +88,17 @@ public class AccountRepository : IAccountRepository
                 x.Currency != null &&
                 x.CurrencyId == filter.CurrencyId);
         }
-        if (filter.Type is not null)
+        if (filter.Type.HasValue)
         {
-            query = query.Where(a => a.Type.Equals(filter.Type));
+            query = query.Where(x =>
+                x.Type == filter.Type.Value);
         }
+
         if (filter.Number is not null)
         {
             query = query.Where(x =>
                 x.Number != null &&
-                x.Number == filter.Number);
+                x.Number.Equals(filter.Number));
         }
         var result = await query.ToListAsync();
         var accountDTO = result.Adapt<List<AccountDTO>>();
