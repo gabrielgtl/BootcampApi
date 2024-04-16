@@ -6,9 +6,7 @@ using Core.Models;
 using Core.Requests;
 using Infrastructure.Contexts;
 using Mapster;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Principal;
 
 namespace Infrastructure.Repositories;
 

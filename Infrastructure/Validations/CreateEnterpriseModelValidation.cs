@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace Infrastructure.Validations;
 
-public class CreateBusinessModelValidation : AbstractValidator<CreateBusinessModel>
+public class CreateEnterpriseModelValidation : AbstractValidator<CreateEnterpriseModel>
 {
-    public CreateBusinessModelValidation()
+    public CreateEnterpriseModelValidation()
     {
         RuleFor(x => x.Name)
             .NotNull().WithMessage("Name cannot be null")
@@ -13,6 +13,8 @@ public class CreateBusinessModelValidation : AbstractValidator<CreateBusinessMod
             .MinimumLength(5).WithMessage("Name must have at least 5 characters");
 
         RuleFor(x => x.Email)
+            .NotNull().WithMessage("Email cannot be null")
+            .NotEmpty().WithMessage("Email cannot be empty")
             .EmailAddress();
 
         RuleFor(x => x.Phone)

@@ -11,15 +11,22 @@ public class PromotionMappingConfiguration : IRegister
     {
         config.NewConfig<CreatePromotionModel, Promotion>()
             .Map(dest => dest.Name, src => src.Name)
-            .Map(dest => dest.DurationTime, src => src.DurationTime)
-            .Map(dest => dest.DiscountPercentage, src => src.DiscountPercentage)
-            .Map(dest => dest.BusinessId, src => src.BusinessId);
+            .Map(dest => dest.Start, src => src.End)
+            .Map(dest => dest.End, src => src.End)
+            .Map(dest => dest.Discount, src => src.Discount);
+
 
         config.NewConfig<Promotion, PromotionDTO>()
             .Map(dest => dest.Id, src => src.Id)
             .Map(dest => dest.Name, src => src.Name)
-            .Map(dest => dest.DurationTime, src => src.DurationTime)
-            .Map(dest => dest.DiscountPercentage, src => src.DiscountPercentage)
-            .Map(dest => dest.Business, src => src.Business);
+            .Map(dest => dest.Start, src => src.Start)
+            .Map(dest => dest.End, src => src.End)
+            .Map(dest => dest.Discount, src => src.Discount)
+            .AfterMapping((src, dest) =>
+             {
+                 dest.Enterprises = src.PromotionsEnterprises
+                 .Select(pe => pe.Enterprise.Adapt<EnterpriseDTO>())
+                 .ToList();
+             }); 
     }
 }

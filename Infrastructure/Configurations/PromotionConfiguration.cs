@@ -8,24 +8,23 @@ public class PromotionConfiguration : IEntityTypeConfiguration<Promotion>
 {
     public void Configure(EntityTypeBuilder<Promotion> entity)
     {
-        entity
-            .HasKey(e => e.Id)
-            .HasName("Promotion_pkey");
+        entity.HasKey(p => p.Id);
 
         entity
-            .Property(e => e.Name)
-            .HasMaxLength(100)
+            .Property(p => p.Start)
             .IsRequired();
-        entity
-            .Property(e => e.DurationTime);
 
         entity
-            .Property(e => e.DiscountPercentage)
-            .HasPrecision(20, 5);
+            .Property(p => p.End)
+            .IsRequired();
 
         entity
-            .HasOne(d => d.Business)
-            .WithMany(p => p.Promotions)
-            .HasForeignKey(d => d.BusinessId);
+            .Property(p => p.Discount)
+            .IsRequired();
+
+        entity
+            .HasMany(p => p.PromotionsEnterprises)
+            .WithOne(pe => pe.Promotion)
+            .HasForeignKey(pe => pe.PromotionId);
     }
 }

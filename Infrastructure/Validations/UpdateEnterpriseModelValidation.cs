@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace Infrastructure.Validations;
 
-public class UpdateBusinessModelValidation : AbstractValidator<UpdateBusinessModel>
+public class UpdateEnterpriseModelValidation : AbstractValidator<UpdateEnterpriseModel>
 {
-    public UpdateBusinessModelValidation()
+    public UpdateEnterpriseModelValidation()
     {
         RuleFor(x => x.Name)
             .NotNull().WithMessage("Name cannot be null")

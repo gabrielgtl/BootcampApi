@@ -7,7 +7,6 @@ using Core.Requests;
 using Infrastructure.Contexts;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Infrastructure.Repositories;
 
@@ -22,19 +21,36 @@ public class PromotionRepository : IPromotionRepository
 
     public async Task<PromotionDTO> Add(CreatePromotionModel model)
     {
+
         var promotion = model.Adapt<Promotion>();
+
+
+        foreach (int enterpriseId in model.Enterprises)
+        {
+            var promotionEnterprise = new PromotionEnterprise
+            {
+                Promotion = promotion,
+                EnterpriseId = enterpriseId
+            };
+            _context.PromotionEnterprises.Add(promotionEnterprise);
+        }
+
         _context.Promotions.Add(promotion);
 
         await _context.SaveChangesAsync();
 
         var createdPromotion = await _context.Promotions
-            .Include(a => a.Business)
+            .Include(a => a.PromotionsEnterprises)
+            .ThenInclude(a => a.Enterprise)
             .FirstOrDefaultAsync(a => a.Id == promotion.Id);
 
-        return createdPromotion.Adapt<PromotionDTO>();
+
+        var promotionDTO = promotion.Adapt<PromotionDTO>();
+
+        return promotionDTO;
     }
 
-    public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(int id)
     {
         var promotion = await _context.Promotions.FindAsync(id);
         if (promotion == null) { throw new NotFoundException($"Promotion with id: {id} not found"); }
@@ -45,32 +61,30 @@ public class PromotionRepository : IPromotionRepository
 
     public async Task<PromotionDTO> GetById(int id)
     {
-        var query = _context.Promotions
-            .Include(a => a.Business)
-            .AsQueryable();
+        var promotions = await _context.Promotions
+            .Include(a => a.PromotionsEnterprises)
+            .ThenInclude(a =>a.Enterprise)
+            .FirstOrDefaultAsync(x => x.Id == id);
 
-        var promotion = await _context.Promotions.FindAsync(id);
+        if (promotions is null) throw new NotFoundException($"The promotion with id: {id} doest not exist");
 
-        if (promotion is null)
-            throw new NotFoundException($"Promotion with id: {id} not found");
-        var result = await query.ToListAsync();
-
-        var promotionDTO = promotion.Adapt<PromotionDTO>();
-
-        return promotionDTO;
+        return promotions.Adapt<PromotionDTO>();
     }
 
     public async Task<PromotionDTO> Update(UpdatePromotionModel model)
     {
-        var promotion = model.Adapt<Promotion>();
+        var promotion = await _context.Promotions.FindAsync(model.Id);
+
+        if (promotion is null) throw new Exception("Promotion was not found");
+
+        model.Adapt(promotion);
+
         _context.Promotions.Update(promotion);
 
         await _context.SaveChangesAsync();
 
-        var updatedPromotion = await _context.Promotions
-            .Include(a => a.Business)
-            .FirstOrDefaultAsync(a => a.Id == promotion.Id);
+        var promotionDTO = promotion.Adapt<PromotionDTO>();
 
-        return updatedPromotion.Adapt<PromotionDTO>();
+        return promotionDTO;
     }
 }

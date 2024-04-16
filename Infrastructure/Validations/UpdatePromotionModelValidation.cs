@@ -12,8 +12,5 @@ public class UpdatePromotionModelValidation : AbstractValidator<UpdatePromotionM
             .NotEmpty().WithMessage("Name cannot be empty")
             .MinimumLength(5).WithMessage("Name must have at least 5 characters");
 
-        RuleFor(x => x.BusinessId)
-            .NotNull().WithMessage("BusinessId cannot be null")
-            .NotEmpty().WithMessage("BusinessId cannot be empty");
     }
 }

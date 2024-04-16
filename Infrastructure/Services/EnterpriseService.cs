@@ -6,16 +6,16 @@ using Infrastructure.Repositories;
 
 namespace Infrastructure.Services;
 
-public class BusinessService : IBusinessService
+public class EnterpriseService : IEnterpriseService
 {
-    private readonly IBusinessRepository _bussinesRepository;
+    private readonly IEnterpriseRepository _bussinesRepository;
 
-    public BusinessService(IBusinessRepository businessRepository)
+    public EnterpriseService(IEnterpriseRepository businessRepository)
     {
         _bussinesRepository = businessRepository;
     }
 
-    public async Task<BusinessDTO> Add(CreateBusinessModel model)
+    public async Task<EnterpriseDTO> Add(CreateEnterpriseModel model)
     {
         return await _bussinesRepository.Add(model);
 
@@ -26,12 +26,12 @@ public class BusinessService : IBusinessService
         return await _bussinesRepository.Delete(id);
     }
 
-    public async Task<BusinessDTO> GetById(int id)
+    public async Task<EnterpriseDTO> GetById(int id)
     {
         return await _bussinesRepository.GetById(id);
     }
 
-    public async Task<BusinessDTO> Update(UpdateBusinessModel model)
+    public async Task<EnterpriseDTO> Update(UpdateEnterpriseModel model)
     {
         return await _bussinesRepository.Update(model);
     }
