@@ -1,5 +1,5 @@
 ﻿using Core.Constants;
-using Core.Requests;
+using Core.Requests.Customer;
 using FluentValidation;
 namespace Infrastructure.Validations;
 

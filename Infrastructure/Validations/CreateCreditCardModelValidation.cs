@@ -1,5 +1,5 @@
 ﻿using Core.Constants;
-using Core.Requests;
+using Core.Requests.CreditCard;
 using FluentValidation;
 using System;
 using System.Collections.Generic;

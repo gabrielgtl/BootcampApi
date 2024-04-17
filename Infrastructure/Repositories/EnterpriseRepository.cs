@@ -2,7 +2,7 @@
 using Core.Exceptions;
 using Core.Interfaces.Repositories;
 using Core.Models;
-using Core.Requests;
+using Core.Requests.Enterprise;
 using Infrastructure.Contexts;
 using Mapster;
 

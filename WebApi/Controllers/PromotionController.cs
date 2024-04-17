@@ -1,5 +1,6 @@
 ﻿using Core.Interfaces.Services;
-using Core.Requests;
+using Core.Requests.Promotion;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,7 +27,12 @@ public class PromotionController : BaseApiController
         var promotion = await _service.GetById(id);
         return Ok(promotion);
     }
-
+    [HttpGet("filtered")]
+    public async Task<IActionResult> GetFiltered([FromQuery] FilterPromotionModel filter)
+    {
+        var promotions = await _service.GetFiltered(filter);
+        return Ok(promotions);
+    }
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] UpdatePromotionModel request)
     {

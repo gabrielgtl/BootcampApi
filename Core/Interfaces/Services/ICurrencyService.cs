@@ -1,6 +1,6 @@
 ﻿
 using Core.Models;
-using Core.Requests;
+using Core.Requests.Currency;
 
 namespace Core.Interfaces.Services;
 

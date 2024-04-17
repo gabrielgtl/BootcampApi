@@ -1,7 +1,7 @@
 ﻿using Core.Constants;
 using Core.Entities;
 using Core.Models;
-using Core.Requests;
+using Core.Requests.Customer;
 using Mapster;
 
 namespace Infrastructure.Mappings;

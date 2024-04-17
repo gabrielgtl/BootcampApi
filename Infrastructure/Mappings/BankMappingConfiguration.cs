@@ -1,6 +1,6 @@
 ﻿using Core.Entities;
 using Core.Models;
-using Core.Requests;
+using Core.Requests.Bank;
 using Mapster;
 
 namespace Infrastructure.Mappings;

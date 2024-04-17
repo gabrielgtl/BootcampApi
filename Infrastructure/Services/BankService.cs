@@ -2,7 +2,7 @@
 using Core.Interfaces.Repositories;
 using Core.Interfaces.Services;
 using Core.Models;
-using Core.Requests;
+using Core.Requests.Bank;
 
 namespace Infrastructure.Services;
 

@@ -3,7 +3,7 @@ using Core.Entities;
 using Core.Exceptions;
 using Core.Interfaces.Repositories;
 using Core.Models;
-using Core.Requests;
+using Core.Requests.Account;
 using Infrastructure.Contexts;
 using Mapster;
 using Microsoft.EntityFrameworkCore;

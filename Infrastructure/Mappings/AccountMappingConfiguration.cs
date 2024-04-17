@@ -1,6 +1,8 @@
 ﻿using Core.Entities;
 using Core.Models;
-using Core.Requests;
+using Core.Requests.Account;
+using Core.Requests.CurrentAccount;
+using Core.Requests.SavingAccount;
 using Mapster;
 
 namespace Infrastructure.Mappings;

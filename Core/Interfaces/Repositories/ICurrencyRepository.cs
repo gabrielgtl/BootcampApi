@@ -1,5 +1,5 @@
 ﻿using Core.Models;
-using Core.Requests;
+using Core.Requests.Currency;
 namespace Core.Interfaces.Repositories;
 
 public interface ICurrencyRepository

@@ -1,5 +1,5 @@
 ﻿using Core.Models;
-using Core.Requests;
+using Core.Requests.Customer;
 
 namespace Core.Interfaces.Repositories;
 

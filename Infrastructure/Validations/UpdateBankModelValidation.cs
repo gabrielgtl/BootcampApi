@@ -1,4 +1,4 @@
-﻿using Core.Requests;
+﻿using Core.Requests.Bank;
 using FluentValidation;
 
 

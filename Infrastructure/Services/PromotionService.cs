@@ -1,7 +1,7 @@
 ﻿using Core.Interfaces.Repositories;
 using Core.Interfaces.Services;
 using Core.Models;
-using Core.Requests;
+using Core.Requests.Promotion;
 using Infrastructure.Repositories;
 
 namespace Infrastructure.Services;
@@ -29,6 +29,11 @@ public class PromotionService : IPromotionService
     {
         return await _promotionRepository.GetById(id);
 
+    }
+
+    public async Task<List<PromotionDTO>> GetFiltered(FilterPromotionModel filter)
+    {
+        return await _promotionRepository.GetFiltered(filter);
     }
 
     public async Task<PromotionDTO> Update(UpdatePromotionModel model)

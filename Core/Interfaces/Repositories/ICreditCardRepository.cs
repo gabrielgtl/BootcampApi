@@ -1,5 +1,5 @@
 ﻿using Core.Models;
-using Core.Requests;
+using Core.Requests.CreditCard;
 namespace Core.Interfaces.Repositories;
 
 public interface ICreditCardRepository

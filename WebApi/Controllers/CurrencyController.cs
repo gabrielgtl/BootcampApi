@@ -1,5 +1,5 @@
 ﻿using Core.Interfaces.Services;
-using Core.Requests;
+using Core.Requests.Currency;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

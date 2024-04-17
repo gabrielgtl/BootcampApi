@@ -2,7 +2,7 @@
 using Core.Entities;
 using Core.Interfaces.Repositories;
 using Core.Models;
-using Core.Requests;
+using Core.Requests.Customer;
 using Infrastructure.Contexts;
 using Infrastructure.Migrations;
 using Mapster;

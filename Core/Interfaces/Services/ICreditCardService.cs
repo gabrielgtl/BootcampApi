@@ -1,5 +1,5 @@
 ﻿using Core.Models;
-using Core.Requests;
+using Core.Requests.CreditCard;
 using System;
 using System.Collections.Generic;
 using System.Linq;

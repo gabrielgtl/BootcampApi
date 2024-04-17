@@ -1,6 +1,6 @@
 ﻿using Core.Entities;
 using Core.Models;
-using Core.Requests;
+using Core.Requests.Promotion;
 using Mapster;
 
 namespace Infrastructure.Mappings;
@@ -14,7 +14,6 @@ public class PromotionMappingConfiguration : IRegister
             .Map(dest => dest.Start, src => src.End)
             .Map(dest => dest.End, src => src.End)
             .Map(dest => dest.Discount, src => src.Discount);
-
 
         config.NewConfig<Promotion, PromotionDTO>()
             .Map(dest => dest.Id, src => src.Id)

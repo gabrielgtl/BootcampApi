@@ -31,13 +31,16 @@ public partial class BootcampContext : DbContext
     public virtual DbSet<Promotion> Promotions { get; set; }
     public virtual DbSet<Enterprise> Enterprises { get; set; }
     public virtual DbSet<Movement> Movements { get; set; }
+    public virtual DbSet<Request> Requests { get; set; }
+    public virtual DbSet<Product> Products { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new AccountConfiguration());
         modelBuilder.ApplyConfiguration(new CreditCardConfiguration());
         modelBuilder.ApplyConfiguration(new BankConfiguration());
-        modelBuilder.ApplyConfiguration(new PromotionBusinessConfiguration());
+        modelBuilder.ApplyConfiguration(new PromotionEnterpriseConfiguration());
         modelBuilder.ApplyConfiguration(new PromotionConfiguration());
         modelBuilder.ApplyConfiguration(new EnterpriseConfiguration());
         modelBuilder.ApplyConfiguration(new CustomerConfiguration());
@@ -45,6 +48,10 @@ public partial class BootcampContext : DbContext
         modelBuilder.ApplyConfiguration(new MovementConfiguration());
         modelBuilder.ApplyConfiguration(new CurrentAccountConfiguration());
         modelBuilder.ApplyConfiguration(new SavingAccountConfiguration());
+        modelBuilder.ApplyConfiguration(new ProductConfiguration());
+        modelBuilder.ApplyConfiguration(new RequestConfiguration());
+
+
 
         OnModelCreatingPartial(modelBuilder);
     }

@@ -1,4 +1,4 @@
-﻿using Core.Requests;
+﻿using Core.Requests.Currency;
 using FluentValidation;
 
 namespace Infrastructure.Validations

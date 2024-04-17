@@ -3,7 +3,7 @@ using Core.Entities;
 using Core.Exceptions;
 using Core.Interfaces.Repositories;
 using Core.Models;
-using Core.Requests;
+using Core.Requests.Promotion;
 using Infrastructure.Contexts;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +23,6 @@ public class PromotionRepository : IPromotionRepository
     {
 
         var promotion = model.Adapt<Promotion>();
-
 
         foreach (int enterpriseId in model.Enterprises)
         {
@@ -71,20 +70,72 @@ public class PromotionRepository : IPromotionRepository
         return promotions.Adapt<PromotionDTO>();
     }
 
+    public async Task<List<PromotionDTO>> GetFiltered(FilterPromotionModel filter)
+    {
+        var query = _context.Promotions
+                                 .Include(a => a.PromotionsEnterprises)
+                                 .ThenInclude(a => a.Enterprise)
+                                 .AsQueryable();
+
+        if (filter.Name is not null)
+        {
+            string normalizedFilterName = filter.Name.ToLower();
+            query = query.Where(x =>
+                (x.Name).ToLower().Equals(normalizedFilterName));
+        }
+       if (filter.PromotionStart is not null)
+        {
+            query = query.Where(x =>
+                x.Start != null &&
+                x.Start.Year >= filter.PromotionStart);
+        }
+        if (filter.PromotionEnd is not null)
+        {
+            query = query.Where(x =>
+                x.End != null &&
+                x.End.Year <= filter.PromotionEnd);
+        }
+
+        var result = await query.ToListAsync();
+        if (result == null) { throw new NotFoundException("Promotions not found"); }
+        var promotionDTO = result.Adapt<List<PromotionDTO>>();
+        return promotionDTO;
+    }
+
     public async Task<PromotionDTO> Update(UpdatePromotionModel model)
     {
-        var promotion = await _context.Promotions.FindAsync(model.Id);
+        var query = _context.Promotions
+                         .Include(a => a.PromotionsEnterprises)
+                         .ThenInclude(a => a.Enterprise)
+                         .AsQueryable();
 
-        if (promotion is null) throw new Exception("Promotion was not found");
+        var result = await query.ToListAsync();
+
+        var promotion = await _context.Promotions
+        .Include(p => p.PromotionsEnterprises)
+        .FirstOrDefaultAsync(p => p.Id == model.Id);
+
+        if (promotion == null)
+        {
+            throw new NotFoundException("Enterprises not found");
+        }
 
         model.Adapt(promotion);
 
-        _context.Promotions.Update(promotion);
+        promotion.PromotionsEnterprises.Clear();
+
+        foreach (int enterpriseId in model.Enterprises)
+        {
+            var promotionEnterprise = new PromotionEnterprise
+            {
+                PromotionId = promotion.Id,
+                EnterpriseId = enterpriseId
+            };
+            promotion.PromotionsEnterprises.Add(promotionEnterprise);
+        }
 
         await _context.SaveChangesAsync();
-
         var promotionDTO = promotion.Adapt<PromotionDTO>();
-
         return promotionDTO;
     }
 }
