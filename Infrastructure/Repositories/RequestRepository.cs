@@ -31,6 +31,8 @@ public class RequestRepository : IRequestRepository
         var createdRequest = await _context.Requests
             .Include(a => a.Currency)
             .Include(a => a.Product)
+            .Include(a => a.Customer)
+            .ThenInclude(a => a.Bank)
             .FirstOrDefaultAsync(a => a.Id == request.Id);
 
         return createdRequest.Adapt<RequestDTO>();
@@ -41,6 +43,8 @@ public class RequestRepository : IRequestRepository
         var request = await _context.Requests
             .Include(a => a.Currency)
             .Include(a => a.Product)
+            .Include(a => a.Customer)
+            .ThenInclude(a => a.Bank)
             .FirstOrDefaultAsync(x => x.Id == id);
 
         if (request is null) throw new NotFoundException($"The request with id: {id} doest not exist");
@@ -59,6 +63,8 @@ public class RequestRepository : IRequestRepository
         var createdRequest = await _context.Requests
             .Include(a => a.Currency)
             .Include(a => a.Product)
+            .Include(a => a.Customer)
+            .ThenInclude(a => a.Bank)
             .FirstOrDefaultAsync(a => a.Id == request.Id);
 
         return createdRequest.Adapt<RequestDTO>();

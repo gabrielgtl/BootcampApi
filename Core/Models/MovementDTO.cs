@@ -1,8 +1,9 @@
 ﻿using Core.Constants;
+using Core.Entities;
 
-namespace Core.Entities;
+namespace Core.Models;
 
-public class Movement
+public class MovementDTO
 {
     public int Id { get; set; }
     public DateTime? TransferredDateTime { get; set; }
@@ -10,11 +11,6 @@ public class Movement
     public MovementType MovementType { get; set; } = MovementType.Transference;
     public decimal Amount { get; set; }
     public string Description { get; set; } = string.Empty;
-
-
-    public int DestinationAccountId { get; set; }
-    public int OriginAccountId { get; set; }
-
-
-    public virtual Account Account { get; set; } = null!;
+    public string AccountDestiny { get; set; } = string.Empty;
+    public string AccountSource { get; set; } = string.Empty;
 }

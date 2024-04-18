@@ -1,11 +1,6 @@
 ﻿using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Configurations;
 
@@ -18,22 +13,27 @@ public class MovementConfiguration : IEntityTypeConfiguration<Movement>
             .HasName("Movimientos_pkey");
 
         entity
-            .Property(e => e.Destination)
-            .HasMaxLength(150)
-            .IsRequired();
-        entity
             .Property(e => e.TransferredDateTime)
-            .HasColumnType("timestamp without time zone");
+            .HasColumnType("timestamp without time zone")
+            .IsRequired();
+
         entity
             .Property(e => e.Amount)
-            .HasPrecision(20, 5);
+            .HasPrecision(20, 5)
+            .IsRequired();
+
         entity
-            .Property(e => e.TransferStatus)
-            .HasMaxLength(50);
+            .Property(e => e.Description)
+            .HasMaxLength(500);
 
         entity
             .HasOne(d => d.Account)
             .WithMany(p => p.Movements)
-            .HasForeignKey(d => d.AccountId);
+            .HasForeignKey(d => d.OriginAccountId);
+
+        entity
+            .HasOne(d => d.Account)
+            .WithMany(p => p.Movements)
+            .HasForeignKey(d => d.DestinationAccountId);
     }
 }

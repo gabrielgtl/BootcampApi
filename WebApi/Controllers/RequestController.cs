@@ -1,7 +1,5 @@
 ﻿using Core.Interfaces.Services;
-using Core.Requests.Bank;
 using Core.Requests.Request;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;

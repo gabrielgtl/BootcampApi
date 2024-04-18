@@ -30,7 +30,7 @@ public class CustomerMappingConfiguration : IRegister
             .Map(dest => dest.Mail, src => src.Mail)
             .Map(dest => dest.Phone, src => src.Phone)
             .Map(dest => dest.CustomerStatus, src => src.CustomerStatus)
-            .Map(dest => dest.Bank, src => src.Bank)
+            .Map(dest => dest.BankName, src => src.Bank.Name)
             .Map(dest => dest.Birth, src => src.Birth);
     }
 }

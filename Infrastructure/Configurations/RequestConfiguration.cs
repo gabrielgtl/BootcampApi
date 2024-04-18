@@ -10,19 +10,19 @@ public class RequestConfiguration : IEntityTypeConfiguration<Request>
     {
         entity.HasKey(e => e.Id).HasName("Request_pkey");
         entity
-            .Property(e => e.Brand)
-            .HasMaxLength(100);
-        entity
-            .Property(e => e.Amount)
-            .HasColumnType("numeric(10,5)");
-        entity
-            .Property(e => e.Term)
-            .HasColumnType("numeric(20,5)");
+            .Property(e => e.RequestDescription)
+            .HasMaxLength(100)
+            .IsRequired();
 
         entity
             .HasOne(request => request.Currency)
             .WithMany(currency => currency.Requests)
             .HasForeignKey(request => request.CurrencyId);
+
+        entity
+            .HasOne(request => request.Customer)
+            .WithMany(customer => customer.Requests)
+            .HasForeignKey(request => request.CustomerId);
 
         entity
             .HasOne(request => request.Product)

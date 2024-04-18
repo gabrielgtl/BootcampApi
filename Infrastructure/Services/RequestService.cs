@@ -1,9 +1,7 @@
 ﻿using Core.Interfaces.Repositories;
 using Core.Interfaces.Services;
 using Core.Models;
-using Core.Requests.Account;
 using Core.Requests.Request;
-using Infrastructure.Repositories;
 
 namespace Infrastructure.Services;
 
