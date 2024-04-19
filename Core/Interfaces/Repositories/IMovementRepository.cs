@@ -7,4 +7,5 @@ public interface IMovementRepository
 {
     Task<MovementDTO> Transference(CreateMovementModel model);
     Task<MovementDTO> GetById(int id);
+    Task<(bool isValid, string message)> DataValidation(CreateMovementModel model);
 }

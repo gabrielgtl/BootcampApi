@@ -21,4 +21,6 @@ public class Account
     public SavingAccount? SavingAccount { get; set; }
     public CurrentAccount? CurrentAccount { get; set; }
     public virtual ICollection<Movement> Movements { get; set; } = new List<Movement>();
+    public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
+
 }

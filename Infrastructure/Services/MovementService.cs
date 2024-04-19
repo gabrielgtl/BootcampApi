@@ -1,8 +1,8 @@
-﻿using Core.Interfaces.Repositories;
+﻿using Core.Exceptions;
+using Core.Interfaces.Repositories;
 using Core.Interfaces.Services;
 using Core.Models;
 using Core.Requests.Movements;
-using Infrastructure.Repositories;
 
 namespace Infrastructure.Services;
 
@@ -17,6 +17,12 @@ public class MovementService : IMovementService
 
     public async Task<MovementDTO> Transference(CreateMovementModel model)
     {
+        var validationResult = await _movementRepository.DataValidation(model);
+
+        if (!validationResult.isValid)
+        {
+            throw new BusinessLogicException(validationResult.message);
+        }
         return await _movementRepository.Transference(model);
     }
 

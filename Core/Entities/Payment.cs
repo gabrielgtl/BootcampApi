@@ -3,12 +3,8 @@
 public class Payment
 {
     public int Id { get; set; }
-
-
     public decimal Amount { get; set; } 
-
-
-    // Relación con la cuenta de origen
-    public int SourceAccountId { get; set; }
+    public string? Description { get; set; }
+    public int AccountId { get; set; }
     public Account Account { get; set; } = null!;
 }
