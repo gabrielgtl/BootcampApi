@@ -1,7 +1,7 @@
 ﻿using Core.Requests.Promotion;
 using FluentValidation;
 
-namespace Infrastructure.Validations;
+namespace Infrastructure.Validations.Promotion;
 
 public class CreatePromotionModelValidation : AbstractValidator<CreatePromotionModel>
 {
@@ -15,6 +15,6 @@ public class CreatePromotionModelValidation : AbstractValidator<CreatePromotionM
         RuleFor(x => x.Enterprises)
             .NotNull().WithMessage("Enterprises cannot be null")
             .NotEmpty().WithMessage("Enterprises cannot be empty");
-      
+
     }
 }

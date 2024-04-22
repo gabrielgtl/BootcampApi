@@ -2,12 +2,12 @@
 using Core.Requests.Customer;
 using FluentValidation;
 
-namespace Infrastructure.Validations;
+namespace Infrastructure.Validations.Customer;
 
-public class UpdateCustomerModelValidation: AbstractValidator<UpdateCustomerModel>
+public class UpdateCustomerModelValidation : AbstractValidator<UpdateCustomerModel>
 {
     public UpdateCustomerModelValidation()
-         {
+    {
         RuleFor(x => x.Name)
             .NotNull().WithMessage("Name cannot be null")
             .NotEmpty().WithMessage("Name cannot be empty")

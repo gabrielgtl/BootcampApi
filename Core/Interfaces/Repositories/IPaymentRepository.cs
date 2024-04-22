@@ -1,10 +1,10 @@
 ﻿using Core.Models;
-using Core.Requests;
 using Core.Requests.Movements;
+using Core.Requests.Payment;
 
 namespace Core.Interfaces.Repositories;
 
 public interface IPaymentRepository
 {
-    Task<MovementDTO> Payment(CreatePaymentModel model);
+    Task<PaymentDTO> Payment(CreatePaymentModel model);
 }

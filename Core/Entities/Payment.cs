@@ -6,5 +6,8 @@ public class Payment
     public decimal Amount { get; set; } 
     public string? Description { get; set; }
     public int AccountId { get; set; }
+    public int ServiceId { get; set; }
+
+    public Service Service { get; set; } = null!;
     public Account Account { get; set; } = null!;
 }

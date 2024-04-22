@@ -3,7 +3,7 @@ using Core.Requests.Bank;
 using Core.Requests.Request;
 using FluentValidation;
 
-namespace Infrastructure.Validations;
+namespace Infrastructure.Validations.Request;
 
 public class CreateRequestModelValidation : AbstractValidator<CreateRequestModel>
 {

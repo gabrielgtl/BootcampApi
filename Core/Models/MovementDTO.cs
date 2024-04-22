@@ -11,6 +11,8 @@ public class MovementDTO
     public MovementType MovementType { get; set; } = MovementType.Transference;
     public decimal Amount { get; set; }
     public string Description { get; set; } = string.Empty;
-    public string AccountDestiny { get; set; } = string.Empty;
-    public string AccountSource { get; set; } = string.Empty;
+    public int AccountDestiny { get; set; }
+    public int AccountSource { get; set; } 
+
+    public decimal BalanceOriginAcount { get; set; }
 }

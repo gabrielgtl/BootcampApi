@@ -34,6 +34,9 @@ public partial class BootcampContext : DbContext
     public virtual DbSet<Request> Requests { get; set; }
     public virtual DbSet<Payment> Payments { get; set; }
     public virtual DbSet<Product> Products { get; set; }
+    public virtual DbSet<Service> Services { get; set; }
+
+
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -47,6 +50,7 @@ public partial class BootcampContext : DbContext
         modelBuilder.ApplyConfiguration(new CustomerConfiguration());
         modelBuilder.ApplyConfiguration(new CurrencyConfiguration());
         modelBuilder.ApplyConfiguration(new PaymentConfiguration());
+        modelBuilder.ApplyConfiguration(new ServiceConfiguration());
         modelBuilder.ApplyConfiguration(new MovementConfiguration());
         modelBuilder.ApplyConfiguration(new CurrentAccountConfiguration());
         modelBuilder.ApplyConfiguration(new SavingAccountConfiguration());

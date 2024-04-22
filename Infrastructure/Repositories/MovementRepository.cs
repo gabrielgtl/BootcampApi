@@ -123,6 +123,16 @@ public class MovementRepository : IMovementRepository
             }
 
         }
+
+        if (destinationMovement.Account.Type == AccountType.Current)
+        {
+            var currentAccount = destinationMovement.Account.CurrentAccount;
+            if (currentAccount != null && (model.Amount > currentAccount.OperationalLimit || currentAccount.OperationalLimit == 0))
+            {
+                return (false, "Transaction Operation limit exceeded.");
+            }
+
+        }
         if (destinationMovement.Account.Number != model.AccountNumber)
         {
             return (false, "Account number not valid");

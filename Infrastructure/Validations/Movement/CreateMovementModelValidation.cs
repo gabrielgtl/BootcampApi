@@ -1,7 +1,7 @@
 ﻿using Core.Requests.Movements;
 using FluentValidation;
 
-namespace Infrastructure.Validations;
+namespace Infrastructure.Validations.Movemen;
 public class CreateMovementModelValidation : AbstractValidator<CreateMovementModel>
 {
     public CreateMovementModelValidation()
@@ -33,7 +33,7 @@ public class CreateMovementModelValidation : AbstractValidator<CreateMovementMod
         RuleFor(m => new { m.OriginAccountId, m.DestinationAccountId })
                     .Must(x => ValidAccountId(x.OriginAccountId, x.DestinationAccountId))
                     .WithMessage("Invalid account combination");
-}
+    }
 
     private bool ValidAccountId(int originAccountId, int destinationAccountId)
     {

@@ -1,7 +1,7 @@
 ﻿using Core.Constants;
 using Core.Requests.CreditCard;
 using FluentValidation;
-namespace Infrastructure.Validations;
+namespace Infrastructure.Validations.CreditCard;
 
 public class UpdateCreditCardValidation : AbstractValidator<UpdateCreditCardModel>
 {

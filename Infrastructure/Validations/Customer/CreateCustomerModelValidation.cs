@@ -1,9 +1,9 @@
 ﻿using Core.Constants;
 using Core.Requests.Customer;
 using FluentValidation;
-namespace Infrastructure.Validations;
+namespace Infrastructure.Validations.Customer;
 
-public class CreateCustomerModelValidation: AbstractValidator<CreateCustomerModel>
+public class CreateCustomerModelValidation : AbstractValidator<CreateCustomerModel>
 {
     public CreateCustomerModelValidation()
     {

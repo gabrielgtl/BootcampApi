@@ -7,11 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Validations;
+namespace Infrastructure.Validations.CreditCard;
 
-public class CreateCreditCardModelValidation: AbstractValidator<CreateCreditCardModel>
+public class CreateCreditCardModelValidation : AbstractValidator<CreateCreditCardModel>
 {
-    public CreateCreditCardModelValidation() 
+    public CreateCreditCardModelValidation()
     {
         RuleFor(x => x.Designation)
             .NotNull().WithMessage("Designation cannot be null")

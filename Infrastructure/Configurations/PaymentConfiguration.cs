@@ -25,5 +25,10 @@ public class PaymentConfiguration : IEntityTypeConfiguration<Payment>
             .HasOne(d => d.Account)
             .WithMany(p => p.Payments)
             .HasForeignKey(d => d.AccountId);
+
+        entity
+            .HasOne(d => d.Service)
+            .WithMany(p => p.Payments)
+            .HasForeignKey(d => d.ServiceId);
     }
 }

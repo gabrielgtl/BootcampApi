@@ -1,19 +1,18 @@
-﻿using Core.Requests.Bank;
+﻿using Core.Requests.Enterprise;
 using FluentValidation;
 
+namespace Infrastructure.Validations.Enterprise;
 
-namespace Infrastructure.Validations;
-
-public class UpdateBankModelValidation : AbstractValidator<UpdateBankModel>
+public class UpdateEnterpriseModelValidation : AbstractValidator<UpdateEnterpriseModel>
 {
-    public UpdateBankModelValidation()
+    public UpdateEnterpriseModelValidation()
     {
         RuleFor(x => x.Name)
             .NotNull().WithMessage("Name cannot be null")
             .NotEmpty().WithMessage("Name cannot be empty")
             .MinimumLength(5).WithMessage("Name must have at least 5 characters");
 
-        RuleFor(x => x.Mail)
+        RuleFor(x => x.Email)
             .EmailAddress();
 
         RuleFor(x => x.Phone)

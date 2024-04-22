@@ -1,11 +1,11 @@
 ﻿using Core.Requests.Currency;
 using FluentValidation;
 
-namespace Infrastructure.Validations
+namespace Infrastructure.Validations.Currency
 {
-    public class CreateCurrencyModelValidation : AbstractValidator<CreateCurrencyModel>
+    public class UpdateCurrencyModelValidation : AbstractValidator<UpdateCurrencyModel>
     {
-        public CreateCurrencyModelValidation()
+        public UpdateCurrencyModelValidation()
         {
             RuleFor(x => x.Name)
                 .NotNull().WithMessage("Name cannot be null")

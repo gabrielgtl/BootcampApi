@@ -1,7 +1,7 @@
 ﻿using Core.Requests.Promotion;
 using FluentValidation;
 
-namespace Infrastructure.Validations;
+namespace Infrastructure.Validations.Promotion;
 
 public class UpdatePromotionModelValidation : AbstractValidator<UpdatePromotionModel>
 {

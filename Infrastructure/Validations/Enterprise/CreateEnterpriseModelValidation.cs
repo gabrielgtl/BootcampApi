@@ -1,19 +1,20 @@
-﻿using Core.Requests.Bank;
+﻿using Core.Requests.Enterprise;
 using FluentValidation;
-using System.ComponentModel.DataAnnotations;
 
-namespace Infrastructure.Validations;
+namespace Infrastructure.Validations.Enterprise;
 
-public class CreateBankModelValidation : AbstractValidator<CreateBankModel>
+public class CreateEnterpriseModelValidation : AbstractValidator<CreateEnterpriseModel>
 {
-    public CreateBankModelValidation()
+    public CreateEnterpriseModelValidation()
     {
         RuleFor(x => x.Name)
             .NotNull().WithMessage("Name cannot be null")
             .NotEmpty().WithMessage("Name cannot be empty")
             .MinimumLength(5).WithMessage("Name must have at least 5 characters");
 
-        RuleFor(x => x.Mail)
+        RuleFor(x => x.Email)
+            .NotNull().WithMessage("Email cannot be null")
+            .NotEmpty().WithMessage("Email cannot be empty")
             .EmailAddress();
 
         RuleFor(x => x.Phone)
