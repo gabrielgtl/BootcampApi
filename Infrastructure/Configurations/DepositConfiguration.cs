@@ -11,6 +11,11 @@ namespace Infrastructure.Configurations
             entity
                 .HasKey(e => e.Id)
                 .HasName("Deposit_pkey");
+
+            entity
+                .Property(e => e.Amount)
+                .HasPrecision(20, 5)
+                .IsRequired();
         }
     }
 }

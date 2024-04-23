@@ -1,6 +1,7 @@
 ﻿using Core.Entities;
 using Core.Models;
 using Core.Requests;
+using Core.Requests.Payment;
 using Mapster;
 
 namespace Infrastructure.Mappings;
@@ -21,10 +22,6 @@ public class PaymentMappingConfiguration : IRegister
                 if (dest.Id == src.AccountId)
                 {
                     dest.Balance -= src.Amount;
-                    if (dest.CurrentAccount != null)
-                    {
-                        dest.CurrentAccount.OperationalLimit -= src.Amount;
-                    }
                 }
             });
 

@@ -3,6 +3,7 @@ using System;
 using Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(BootcampContext))]
-    partial class BootcampContextModelSnapshot : ModelSnapshot
+    [Migration("20240423135021_DepositEntity")]
+    partial class DepositEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -285,8 +288,7 @@ namespace Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<decimal>("Amount")
-                        .HasPrecision(20, 5)
-                        .HasColumnType("numeric(20,5)");
+                        .HasColumnType("numeric");
 
                     b.Property<DateTime>("OperationDate")
                         .HasColumnType("timestamp with time zone");
@@ -326,32 +328,6 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Enterprises");
-                });
-
-            modelBuilder.Entity("Core.Entities.Extraction", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AccountId")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal>("Amount")
-                        .HasPrecision(20, 5)
-                        .HasColumnType("numeric(20,5)");
-
-                    b.Property<DateTime>("OperationDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id")
-                        .HasName("Extraction_pkey");
-
-                    b.HasIndex("AccountId");
-
-                    b.ToTable("Extractions");
                 });
 
             modelBuilder.Entity("Core.Entities.Movement", b =>
@@ -647,17 +623,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("Account");
                 });
 
-            modelBuilder.Entity("Core.Entities.Extraction", b =>
-                {
-                    b.HasOne("Core.Entities.Account", "Account")
-                        .WithMany("Extractions")
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Account");
-                });
-
             modelBuilder.Entity("Core.Entities.Movement", b =>
                 {
                     b.HasOne("Core.Entities.Account", "Account")
@@ -750,8 +715,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("CurrentAccount");
 
                     b.Navigation("Deposits");
-
-                    b.Navigation("Extractions");
 
                     b.Navigation("Movements");
 

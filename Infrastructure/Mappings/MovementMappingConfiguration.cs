@@ -23,26 +23,10 @@ public class MovementMappingConfiguration : IRegister
                 if (dest.Id == src.OriginAccountId)
                 {
                     dest.Balance -= src.Amount;
-                    if (dest.CurrentAccount != null)
-                    {
-                        dest.CurrentAccount.OperationalLimit -= src.Amount;
-                    }
-                    /* else if (dest.SavingAccount != null)
-                     {
-                         dest.SavingAccount.OperationalLimit -= src.Amount;
-                     }*/
                 }
                 else if (dest.Id == src.DestinationAccountId)
                 {
                     dest.Balance += src.Amount;
-                    if (dest.CurrentAccount != null)
-                    {
-                        dest.CurrentAccount.OperationalLimit -= src.Amount;
-                    }
-                    /* else if (dest.SavingAccount != null)
-                     {
-                         dest.SavingAccount.OperationalLimit += src.Amount;
-                     }*/
                 }
             });
 

@@ -8,6 +8,6 @@ public class PaymentDTO
     public decimal Amount { get; set; }
     public string? Description { get; set; }
     public string Service { get; set; } = string.Empty;
-    public string? AccountHolder { get; set; } = string.Empty;
+    public string AccountHolder { get; set; } = string.Empty;
 
 }
