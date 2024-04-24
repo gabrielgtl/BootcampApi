@@ -114,25 +114,6 @@ public class MovementRepository : IMovementRepository
             return (false, "Account status is not active");
         }
 
-        if (originMovement.Account.Type == AccountType.Current)
-        {
-            var currentAccount = originMovement.Account.CurrentAccount;
-            if (currentAccount != null && (model.Amount > currentAccount.OperationalLimit || currentAccount.OperationalLimit == 0))
-            {
-                return (false, "Transaction Operation limit exceeded.");
-            }
-
-        }
-
-        if (destinationMovement.Account.Type == AccountType.Current)
-        {
-            var currentAccount = destinationMovement.Account.CurrentAccount;
-            if (currentAccount != null && (model.Amount > currentAccount.OperationalLimit || currentAccount.OperationalLimit == 0))
-            {
-                return (false, "Transaction Operation limit exceeded.");
-            }
-
-        }
         if (destinationMovement.Account.Number != model.AccountNumber)
         {
             return (false, "Account number not valid");
@@ -148,6 +129,44 @@ public class MovementRepository : IMovementRepository
             {
                 return (false, "Document number, account number, and destiny bank ID are required when transferring within the same bank.");
             }
+        }
+        var transactionDate = model.TransferredDateTime;
+
+        decimal totalExtractionsAmount = await _context.Extractions
+            .Where(e => e.OperationDate.Month == transactionDate.Month)
+            .SumAsync(e => e.Amount);
+
+        decimal totalDepositsAmount = await _context.Deposits
+            .Where(d => d.OperationDate.Month == transactionDate.Month)
+            .SumAsync(d => d.Amount);
+
+        decimal totalMovementsAmount = await _context.Movements
+            .Where(m => m.TransferredDateTime!.Value.Month == transactionDate.Month)
+            .SumAsync(m => m.Amount);
+
+        decimal totalTransactionsAmount =
+            totalExtractionsAmount + totalDepositsAmount + totalMovementsAmount + model.Amount;
+        if (originMovement.Account.Type == AccountType.Current)
+        {
+            var currentAccount = originMovement.Account.CurrentAccount;
+            if (currentAccount != null && (model.Amount > currentAccount.OperationalLimit
+                || totalTransactionsAmount > currentAccount.OperationalLimit))
+            {
+                return (false, "Transaction Operation limit exceeded.");
+            }
+        }
+        if (destinationMovement.Account.Type == AccountType.Current)
+        {
+            var currentAccount = destinationMovement.Account.CurrentAccount;
+            if (currentAccount != null && (model.Amount > currentAccount.OperationalLimit
+                || totalTransactionsAmount > currentAccount.OperationalLimit))
+            {
+                return (false, "Transaction Operation limit exceeded.");
+            }
+        }
+        if (originMovement.Account.Customer.BankId != model.DestinyBankId)
+        {
+            return (false, "The destination bank does not match the entered bank.");
         }
 
         return (true, "All validations passed successfully");
