@@ -4,7 +4,7 @@ namespace Core.Requests.Movements;
 
 public class CreateMovementModel
 {
-    public DateOnly TransferredDateTime { get; set; }
+    public DateTime TransferredDateTime { get; set; }
     public TransferStatus TransferStatus { get; set; } = TransferStatus.Pending;
     public MovementType MovementType { get; set; } = MovementType.Transference;
     public decimal Amount { get; set; }

@@ -16,7 +16,7 @@ public class ExtractionMappingConfiguration : IRegister
                     .Map(dest => dest.Amount, src => src.Amount)
                     .Map(dest => dest.AccountId, src => src.AccountId);
 
-        config.NewConfig<CreateDepositModel, Account>()
+        config.NewConfig<CreateExtractionModel, Account>()
             .AfterMapping((src, dest) =>
             {
                 if (dest.Id == src.AccountId)

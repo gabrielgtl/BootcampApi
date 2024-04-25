@@ -24,6 +24,10 @@ public class RequestRepository : IRequestRepository
     {
         var request = model.Adapt<Request>();
 
+        if (request.Currency == null)throw new NotFoundException($"The currency with id: {request.CurrencyId} does not exist");
+        if (request.Product == null) throw new NotFoundException($"The product with id: {request.ProductId} does not exist");
+        if (request.Customer == null) throw new NotFoundException($"The product with id: {request.CustomerId} does not exist");
+
         _context.Requests.Add(request);
 
         await _context.SaveChangesAsync();
@@ -48,13 +52,16 @@ public class RequestRepository : IRequestRepository
             .FirstOrDefaultAsync(x => x.Id == id);
 
         if (request is null) throw new NotFoundException($"The request with id: {id} doest not exist");
-
         return request.Adapt<RequestDTO>();
     }
 
     public async Task<RequestDTO> Update(UpdateRequestModel model)
     {
         var request = model.Adapt<Request>();
+        if (request is null) throw new NotFoundException($"The request with id: {request!.Id} doest not exist");
+        if (request.Currency == null) throw new NotFoundException($"The currency with id: {request.CurrencyId} does not exist");
+        if (request.Product == null) throw new NotFoundException($"The product with id: {request.ProductId} does not exist");
+        if (request.Customer == null) throw new NotFoundException($"The product with id: {request.CustomerId} does not exist");
 
         _context.Requests.Update(request);
 

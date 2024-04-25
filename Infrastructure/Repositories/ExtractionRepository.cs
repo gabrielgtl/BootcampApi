@@ -27,44 +27,46 @@ public class ExtractionRepository : IExtractionRepository
             .Where(m => m.Id == model.AccountId)
             .FirstOrDefaultAsync();
 
-        var transactionDate = model.OperationDate;
 
-        decimal totalExtractionsAmount = await _context.Extractions
-            .Where(e => e.OperationDate.Month == transactionDate.Month)
-            .SumAsync(e => e.Amount);
-
-        decimal totalDepositsAmount = await _context.Deposits
-            .Where(d => d.OperationDate.Month == transactionDate.Month)
-            .SumAsync(d => d.Amount);
-
-        decimal totalMovementsAmount = await _context.Movements
-            .Where(m => m.TransferredDateTime!.Value.Month == transactionDate.Month)
-            .SumAsync(m => m.Amount);
-
-        decimal totalTransactionsAmount =
-            totalExtractionsAmount + totalDepositsAmount + totalMovementsAmount + model.Amount;
 
         if (originAccount is null) { return (false, "Account does not exist"); }
-
-        if (originAccount.Type == AccountType.Current)
-        {
-            var currentAccount = originAccount.CurrentAccount;
-            if (currentAccount != null && (model.Amount > currentAccount.OperationalLimit
-                || totalTransactionsAmount > currentAccount.OperationalLimit))
-            {
-                return (false, "Transaction Operation limit exceeded.");
-            }
-        }
 
         if (originAccount.Customer.BankId != model.BankId)
         {
             return (false, "The destination bank does not match the entered bank.");
         }
+
+        if (originAccount.Balance < model.Amount)
+        {
+            return (false, "You don't have that much money");
+        }
         return (true, "Validations Passed");
     }
 
-    public Task<ExtractionDTO> Extraction(CreateExtractionModel model)
+    public async Task<ExtractionDTO> Extraction(CreateExtractionModel model)
     {
-        throw new NotImplementedException();
+        {
+            var extraction = model.Adapt<Extraction>();
+
+            _context.Extractions.Add(extraction);
+
+
+            var destinationAccount = _context.Accounts
+                .Include(a => a.CurrentAccount)
+                .Include(a => a.SavingAccount)
+                .FirstOrDefault(a => a.Id == model.AccountId);
+
+            if (destinationAccount != null)
+            {
+                var mappedDestinationAccount = model.Adapt(destinationAccount);
+                _context.Entry(mappedDestinationAccount).State = EntityState.Modified;
+            }
+            await _context.SaveChangesAsync();
+            var createdExtraction = await _context.Extractions
+                .Include(a => a.Account)
+                .FirstOrDefaultAsync(a => a.Id == extraction.Id);
+
+            return createdExtraction.Adapt<ExtractionDTO>();
+        }
     }
 }

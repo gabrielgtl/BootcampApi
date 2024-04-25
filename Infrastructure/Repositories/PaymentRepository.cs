@@ -1,5 +1,6 @@
 ﻿using Core.Constants;
 using Core.Entities;
+using Core.Exceptions;
 using Core.Interfaces.Repositories;
 using Core.Models;
 using Core.Requests.Payment;
@@ -17,9 +18,29 @@ public class PaymentRepository : IPaymentRepository
     {
         _context = context;
     }
+
+    public async Task<(bool isValid, string message)> DataValidation(CreatePaymentModel model)
+    {
+        var originAccount = await _context.Accounts
+             .Include(m => m.CurrentAccount)
+             .Include(m => m.SavingAccount)
+             .Include(m => m.Customer)
+             .Where(m => m.Id == model.AccountId)
+             .FirstOrDefaultAsync();
+      
+        if (originAccount == null) { return (false, "Account does not exist"); }
+
+        if (originAccount.Customer.DocumentNumber != model.DocumentNumber) { return (false, "Wrong Documnet Number"); }
+        if (originAccount.Balance < model.Amount) { return (false, "You don't have that much money"); }
+
+        return (true, "Validations Passed");
+    }
+
+
     public async Task<PaymentDTO> Payment(CreatePaymentModel model)
     {
         var payment = model.Adapt<Payment>();
+        if (payment.Service == null) throw new NotFoundException($"The Service with id: {payment.ServiceId} does not exist");
 
         _context.Payments.Add(payment);
 

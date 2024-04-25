@@ -19,16 +19,24 @@ public class CreateMovementModelValidation : AbstractValidator<CreateMovementMod
                     .WithMessage("Invalid movement type");
 
         RuleFor(x => x.Amount)
+                    .NotNull().WithMessage("Amount must not be null")
                     .GreaterThan(0)
                     .WithMessage("Amount must be greater than zero");
 
         RuleFor(x => x.OriginAccountId)
+                    .NotNull().WithMessage("OriginAccountId must not be null")
                     .GreaterThan(0)
                     .WithMessage("Origin account ID must be greater than zero");
 
         RuleFor(x => x.DestinationAccountId)
+                    .NotNull().WithMessage("DestinationAccountId must not be null")
                     .GreaterThan(0)
                     .WithMessage("Destination account ID must be greater than zero");
+
+        RuleFor(x => x.CurrencyId)
+            .NotNull().WithMessage("CurrencyId must not be null")
+            .GreaterThan(0)
+            .WithMessage("CurrencyId must be greater than zero");
 
         RuleFor(m => new { m.OriginAccountId, m.DestinationAccountId })
                     .Must(x => ValidAccountId(x.OriginAccountId, x.DestinationAccountId))

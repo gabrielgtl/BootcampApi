@@ -7,4 +7,6 @@ namespace Core.Interfaces.Repositories;
 public interface IPaymentRepository
 {
     Task<PaymentDTO> Payment(CreatePaymentModel model);
+    Task<(bool isValid, string message)> DataValidation(CreatePaymentModel model);
+
 }
