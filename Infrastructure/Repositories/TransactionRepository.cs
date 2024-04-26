@@ -22,20 +22,27 @@ public class TransactionRepository : ITransactionRepository
 
     public async Task<List<TransactionsDTO>> FilterTransaction(FilterTransactionModel filter)
     {
-        var payments = await _context.Payments.Where(p => p.AccountId == filter.AccountId).ToListAsync();
-        var extractions = await _context.Extractions.Where(e => e.AccountId == filter.AccountId).ToListAsync();
-        var deposits = await _context.Deposits.Where(d => d.AccountId == filter.AccountId).ToListAsync();
-        var movements = await _context.Movements.Where(m =>
-            (m.OriginAccountId == filter.AccountId || m.DestinationAccountId == filter.AccountId)
+        var payments = await _context.Payments
+            .Where(p => p.AccountId == filter.AccountId).ToListAsync();
+
+        var extractions = await _context.Extractions
+            .Where(e => e.AccountId == filter.AccountId).ToListAsync();
+
+        var deposits = await _context.Deposits
+            .Where(d => d.AccountId == filter.AccountId).ToListAsync();
+
+        var movements = await _context.Movements
+            .Where(m =>(m.OriginAccountId == filter.AccountId || m.DestinationAccountId == filter.AccountId)
         ).ToListAsync();
+
         var filteredPayments = payments.Where(p =>
-    (string.IsNullOrEmpty(filter.Description) ||
-    (p.Description != null && Regex.IsMatch(p.Description.Trim(), filter.Description.Trim(), RegexOptions.IgnoreCase))) &&
-    (!filter.StartDate.HasValue || p.OperationDate.Date >= filter.StartDate.Value.Date) &&
-    (!filter.EndDate.HasValue || p.OperationDate.Date <= filter.EndDate.Value.Date) &&
-    (filter.Month == 0 || p.OperationDate.Month == filter.Month) &&
-    (filter.Year == 0 || p.OperationDate.Year == filter.Year)
-).ToList();
+            (string.IsNullOrEmpty(filter.Description) ||
+            (p.Description != null && Regex.IsMatch(p.Description.Trim(), filter.Description.Trim(), RegexOptions.IgnoreCase))) &&
+            (!filter.StartDate.HasValue || p.OperationDate.Date >= filter.StartDate.Value.Date) &&
+            (!filter.EndDate.HasValue || p.OperationDate.Date <= filter.EndDate.Value.Date) &&
+            (filter.Month == 0 || p.OperationDate.Month == filter.Month) &&
+            (filter.Year == 0 || p.OperationDate.Year == filter.Year)
+        ).ToList();      
 
 
         var filteredExtractions = extractions.Where(e =>
