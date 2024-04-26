@@ -16,7 +16,7 @@ public class TransactionController : BaseApiController
         _transactionService = transactionService;
     }
     [HttpGet("filtered")]
-    public async Task<IActionResult> FilterTransaction([FromQuery] FilterTransactionModel filter, int id)
+    public async Task<IActionResult> FilterTransaction([FromQuery] FilterTransactionModel filter)
     {
         var transaction = await _transactionService.FilterTransaction(filter);
         return Ok(transaction);
