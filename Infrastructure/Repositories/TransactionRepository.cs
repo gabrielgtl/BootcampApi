@@ -20,67 +20,60 @@ public class TransactionRepository : ITransactionRepository
         _context = context;
     }
 
-    public async Task<List<TransactionsDTO>> FilterTransaction(int id, FilterTransactionModel filter)
+    public async Task<List<TransactionsDTO>> FilterTransaction(FilterTransactionModel filter)
     {
-        var account = await _context.Accounts.FindAsync(id);
-        var query = _context.Accounts
-            .Include(a => a.Payments)
-            .Include(a => a.Extractions)
-            .Include(a => a.Deposits)
-            .Include(a => a.Movements)
-            .AsQueryable();
+        var payments = await _context.Payments.Where(p => p.AccountId == filter.AccountId).ToListAsync();
+        var extractions = await _context.Extractions.Where(e => e.AccountId == filter.AccountId).ToListAsync();
+        var deposits = await _context.Deposits.Where(d => d.AccountId == filter.AccountId).ToListAsync();
+        var movements = await _context.Movements.Where(m => m.OriginAccountId == filter.AccountId).ToListAsync();
 
-        if (!string.IsNullOrEmpty(filter.Description))
+
+        var filteredPayments = payments.Where(p =>
+            string.IsNullOrEmpty(filter.Description) ||
+            (p.Description != null && Regex.IsMatch(p.Description.Trim(), filter.Description.Trim(), RegexOptions.IgnoreCase))
+        ).ToList();
+
+        var filteredExtractions = extractions.Where(e =>
+            (filter.Month == 0 || filter.Year == 0 || (e.OperationDate.Month == filter.Month && e.OperationDate.Year == filter.Year)) &&
+            (!filter.StartDate.HasValue || e.OperationDate >= filter.StartDate.Value.Date) &&
+            (!filter.EndDate.HasValue || e.OperationDate <= filter.EndDate.Value.Date)
+        ).ToList();
+
+        var filteredDeposits = deposits.Where(d =>
+            (filter.Month == 0 || filter.Year == 0 || (d.OperationDate.Month == filter.Month && d.OperationDate.Year == filter.Year)) &&
+            (!filter.StartDate.HasValue || d.OperationDate >= filter.StartDate.Value.Date) &&
+            (!filter.EndDate.HasValue || d.OperationDate <= filter.EndDate.Value.Date)
+        ).ToList();
+
+        var filteredMovements = movements.Where(m =>
+            (string.IsNullOrEmpty(filter.Description) || (m.Description != null && Regex.IsMatch(m.Description.Trim(), filter.Description.Trim(), RegexOptions.IgnoreCase))) &&
+            (filter.Month == 0 || filter.Year == 0 || (m.TransferredDateTime!.Value.Month == filter.Month && m.TransferredDateTime.Value.Year == filter.Year)) &&
+            (!filter.StartDate.HasValue || m.TransferredDateTime >= filter.StartDate.Value.Date) &&
+            (!filter.EndDate.HasValue || m.TransferredDateTime <= filter.EndDate.Value.Date)
+        ).ToList();
+
+        var combinedResults = new List<TransactionsDTO>();
+
+        if (filteredPayments.Any())
+            combinedResults.AddRange(filteredPayments.Select(p => p.Adapt<TransactionsDTO>()));
+
+        if (filteredExtractions.Any())
+            combinedResults.AddRange(filteredExtractions.Select(e => e.Adapt<TransactionsDTO>()));
+
+        if (filteredDeposits.Any())
+            combinedResults.AddRange(filteredDeposits.Select(d => d.Adapt<TransactionsDTO>()));
+
+        if (filteredMovements.Any())
+            combinedResults.AddRange(filteredMovements.Select(m => m.Adapt<TransactionsDTO>()));
+        if (filter.Type != null)
+
         {
-            var trimmedDescription = filter.Description.Trim().ToLower();
-            var escapedDescription = Regex.Escape(trimmedDescription);
 
-            query = query.Where(a =>
-                a.Payments.Any(p => p.Description != null && Regex.IsMatch(p.Description.Trim(), escapedDescription, RegexOptions.IgnoreCase)) ||
-                a.Movements.Any(m => m.Description != null && Regex.IsMatch(m.Description.Trim(), escapedDescription, RegexOptions.IgnoreCase))
-            );
+            combinedResults = combinedResults.Where(t => t.Type == filter.Type).ToList();
 
         }
-
-        if (filter.Month != 0 && filter.Year != 0)
-        {
-            query = query.Where(a =>
-                (a.Extractions.Any(e => e.OperationDate.Month == filter.Month && e.OperationDate.Year == filter.Year)) ||
-                (a.Deposits.Any(d => d.OperationDate.Month == filter.Month && d.OperationDate.Year == filter.Year)) ||
-                (a.Movements.Any(m => m.TransferredDateTime!.Value.Month == filter.Month && m.TransferredDateTime.Value.Year == filter.Year)));
-        }
-
-        // Aplicar filtro de fecha de inicio si está especificado
-        if (filter.StartDate.HasValue)
-        {
-            query = query.Where(a =>
-                a.Movements.Any(m =>
-                    m.TransferredDateTime >= filter.StartDate.Value.Date ||
-                    a.Deposits.Any(d => d.OperationDate >= filter.StartDate.Value) ||
-                    a.Extractions.Any(w => w.OperationDate >= filter.StartDate.Value)
-                )
-            );
-        }
-
-        // Aplicar filtro de fecha de fin si está especificado
-        if (filter.EndDate.HasValue)
-        {
-            query = query.Where(a =>
-                a.Movements.Any(m =>
-                    m.TransferredDateTime <= filter.EndDate.Value.Date ||
-                    a.Deposits.Any(d => d.OperationDate >= filter.EndDate.Value) ||
-                    a.Extractions.Any(w => w.OperationDate >= filter.EndDate.Value)
-                )
-            );
-        }
-        var result = await query.ToListAsync();
-
-        var accountTransactionsDTOs = result.SelectMany(a => a.Movements.Select(m => m.Adapt<TransactionsDTO>())
-                        .Concat(a.Deposits.Select(d => d.Adapt<TransactionsDTO>()))
-                        .Concat(a.Extractions.Select(w => w.Adapt<TransactionsDTO>()))
-                        .Concat(a.Payments.Select(p => p.Adapt<TransactionsDTO>())))
-                        .ToList();
-        return accountTransactionsDTOs;
+        return combinedResults;
     }
+
 
 }

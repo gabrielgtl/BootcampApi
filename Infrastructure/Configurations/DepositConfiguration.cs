@@ -16,6 +16,14 @@ namespace Infrastructure.Configurations
                 .Property(e => e.Amount)
                 .HasPrecision(20, 5)
                 .IsRequired();
+
+            entity
+                .Property(e => e.Description)
+                .HasMaxLength(500);
+            entity
+                .HasOne(d => d.Account)
+                .WithMany(p => p.Deposits)
+                .HasForeignKey(d => d.AccountId);
         }
     }
 }

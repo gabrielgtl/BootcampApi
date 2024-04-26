@@ -16,7 +16,11 @@ public class ExtractionConfiguration : IEntityTypeConfiguration<Extraction>
             .Property(e => e.Amount)
             .HasPrecision(20, 5)
             .IsRequired();
-        
+
+        entity
+            .Property(e => e.Description)
+            .HasMaxLength(500);
+
         entity
             .HasOne(d => d.Account)
             .WithMany(p => p.Extractions)

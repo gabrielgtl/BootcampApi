@@ -1,6 +1,6 @@
 ﻿using Core.Models;
-using Core.Requests.Movements;
 using Core.Requests.Payment;
+using Core.Requests.Request;
 
 namespace Core.Interfaces.Repositories;
 

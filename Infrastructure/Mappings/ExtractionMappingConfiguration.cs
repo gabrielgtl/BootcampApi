@@ -13,6 +13,7 @@ public class ExtractionMappingConfiguration : IRegister
         config.NewConfig<CreateExtractionModel, Extraction>()
                     .Map(dest => dest.Amount, src => src.Amount)
                     .Map(dest => dest.OperationDate, src => src.OperationDate)
+                    .Map(dest => dest.Description, src => $"DestinationBank:{src.BankId}, {src.Description}")
                     .Map(dest => dest.Amount, src => src.Amount)
                     .Map(dest => dest.AccountId, src => src.AccountId);
 
@@ -30,6 +31,7 @@ public class ExtractionMappingConfiguration : IRegister
             .Map(dest => dest.Amount, src => src.Amount)
             .Map(dest => dest.OperationDate, src => src.OperationDate)
             .Map(dest => dest.Amount, src => src.Amount)
+            .Map(dest => dest.Description, src => src.Description)
             .Map(dest => dest.HolderName, src => src.Account.Holder)
             .Map(dest => dest.HolderName, src => src.Account.Customer.Bank.Name);
 

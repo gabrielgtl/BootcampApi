@@ -40,17 +40,6 @@ public class MovementMappingConfiguration : IRegister
             .Map(dest => dest.Amount, src => src.Amount)
             .Map(dest => dest.Description, src => src.Description)
             .Map(dest => dest.AccountDestiny, src => src.DestinationAccountId)
-            .Map(dest => dest.AccountSource, src => src.OriginAccountId)
-            .AfterMapping((src, dest) =>
-            {
-                if (dest.AccountSource == src.Account.Id)
-                {
-                    dest.BalanceOriginAcount = src.Account.Balance;
-                }
-                else if (dest.AccountDestiny == src.Account.Id)
-                {
-                    dest.BalanceOriginAcount = src.Account.Balance;
-                }
-            });
+            .Map(dest => dest.AccountSource, src => src.OriginAccountId);
     }
 }

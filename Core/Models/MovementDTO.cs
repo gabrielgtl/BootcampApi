@@ -13,6 +13,4 @@ public class MovementDTO
     public string Description { get; set; } = string.Empty;
     public int AccountDestiny { get; set; }
     public int AccountSource { get; set; } 
-
-    public decimal BalanceOriginAcount { get; set; }
 }

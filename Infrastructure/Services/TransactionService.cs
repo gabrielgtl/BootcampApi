@@ -14,8 +14,9 @@ public class TransactionService : ITransactionService
         _transactionRepository = transactionRepository;
     }
 
-    public async Task<List<TransactionsDTO>> FilterTransaction(int id, FilterTransactionModel filter)
+    public async Task<List<TransactionsDTO>> FilterTransaction(FilterTransactionModel filter)
     {
-        return await _transactionRepository.FilterTransaction(id, filter);
+
+        return await _transactionRepository.FilterTransaction(filter);
     }
 }

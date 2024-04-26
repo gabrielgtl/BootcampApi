@@ -40,7 +40,9 @@ public class PaymentRepository : IPaymentRepository
     public async Task<PaymentDTO> Payment(CreatePaymentModel model)
     {
         var payment = model.Adapt<Payment>();
-        if (payment.Service == null) throw new NotFoundException($"The Service with id: {payment.ServiceId} does not exist");
+        var service = await _context.Services.FindAsync(model.ServiceId);
+        if (service == null)
+            throw new NotFoundException($"The service with id: {model.ServiceId} does not exist");
 
         _context.Payments.Add(payment);
 

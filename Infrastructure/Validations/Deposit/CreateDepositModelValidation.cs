@@ -9,7 +9,9 @@ public class CreateDepositModelValidation : AbstractValidator<CreateDepositModel
     {
         RuleFor(x => x.OperationDate)
             .NotNull()
-            .WithMessage("Operation date and time cannot be null");
+            .WithMessage("Operation date and time cannot be null")
+            .NotEmpty().WithMessage("Operation date and time cannot be empty");
+
 
         RuleFor(x => x.Amount)
                     .NotNull().WithMessage("Amount cannot be null")

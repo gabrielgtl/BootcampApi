@@ -57,6 +57,11 @@ public class AccountConfiguration : IEntityTypeConfiguration<Account>
             .HasForeignKey(b => b.AccountId);
 
         entity
+            .HasMany(b => b.Extractions)
+            .WithOne(c => c.Account)
+            .HasForeignKey(b => b.AccountId);
+
+        entity
             .HasOne(account => account.CurrentAccount)
             .WithOne(savingAccount => savingAccount.Account)
             .HasForeignKey<CurrentAccount>(savingAccount => savingAccount.AccountId);

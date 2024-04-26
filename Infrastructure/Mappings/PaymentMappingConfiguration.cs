@@ -13,6 +13,7 @@ public class PaymentMappingConfiguration : IRegister
         config.NewConfig<CreatePaymentModel, Payment>()
             .Map(dest => dest.Amount, src => src.Amount)
             .Map(dest => dest.Description, src => $"DocumentNumber:{src.DocumentNumber}, {src.Description}")
+            .Map(dest => dest.OperationDate, src => src.OperationDate)
             .Map(dest => dest.AccountId, src => src.AccountId)
             .Map(dest => dest.ServiceId, src => src.ServiceId);
 
@@ -28,6 +29,7 @@ public class PaymentMappingConfiguration : IRegister
         config.NewConfig<Payment, PaymentDTO>()
             .Map(dest => dest.Amount, src => src.Amount)
             .Map(dest => dest.Description, src => src.Description)
+            .Map(dest => dest.OperationDate, src => src.OperationDate)
             .Map(dest => dest.Service, src => src.Service.Name)
             .Map(dest => dest.AccountHolder, src => src.Account.Holder);
     }

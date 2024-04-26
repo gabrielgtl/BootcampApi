@@ -1,9 +1,8 @@
-﻿using Core.Constants;
-using Core.Entities;
+﻿using Core.Entities;
 using Core.Exceptions;
 using Core.Interfaces.Repositories;
 using Core.Models;
-using Core.Requests.Account;
+using Core.Requests.Payment;
 using Core.Requests.Request;
 using Infrastructure.Contexts;
 using Mapster;
@@ -24,11 +23,22 @@ public class RequestRepository : IRequestRepository
     {
         var request = model.Adapt<Request>();
 
-        if (request.Currency == null)throw new NotFoundException($"The currency with id: {request.CurrencyId} does not exist");
-        if (request.Product == null) throw new NotFoundException($"The product with id: {request.ProductId} does not exist");
-        if (request.Customer == null) throw new NotFoundException($"The product with id: {request.CustomerId} does not exist");
-
+        
         _context.Requests.Add(request);
+
+        if (request is null) throw new NotFoundException($"The request with id: {request!.Id} doest not exist");
+
+        var currency = await _context.Currencies.FindAsync(model.CurrencyId);
+        if (currency == null)
+            throw new NotFoundException($"The currency with id: {model.CurrencyId} does not exist");
+
+        var product = await _context.Products.FindAsync(model.ProductId);
+        if (product == null)
+            throw new NotFoundException($"The product with id: {model.ProductId} does not exist");
+
+        var customer = await _context.Customers.FindAsync(model.CustomerId);
+        if (customer == null)
+            throw new NotFoundException($"The customer with id: {model.CustomerId} does not exist");
 
         await _context.SaveChangesAsync();
 
@@ -59,9 +69,18 @@ public class RequestRepository : IRequestRepository
     {
         var request = model.Adapt<Request>();
         if (request is null) throw new NotFoundException($"The request with id: {request!.Id} doest not exist");
-        if (request.Currency == null) throw new NotFoundException($"The currency with id: {request.CurrencyId} does not exist");
-        if (request.Product == null) throw new NotFoundException($"The product with id: {request.ProductId} does not exist");
-        if (request.Customer == null) throw new NotFoundException($"The product with id: {request.CustomerId} does not exist");
+        
+        var currency = await _context.Currencies.FindAsync(model.CurrencyId);
+        if (currency == null)
+            throw new NotFoundException($"The currency with id: {model.CurrencyId} does not exist");
+
+        var product = await _context.Products.FindAsync(model.ProductId);
+        if (product == null)
+            throw new NotFoundException($"The product with id: {model.ProductId} does not exist");
+
+        var customer = await _context.Customers.FindAsync(model.CustomerId);
+        if (customer == null)
+            throw new NotFoundException($"The customer with id: {model.CustomerId} does not exist");
 
         _context.Requests.Update(request);
 

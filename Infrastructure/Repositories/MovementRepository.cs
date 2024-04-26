@@ -132,16 +132,26 @@ public class MovementRepository : IMovementRepository
         var transactionDate = model.TransferredDateTime;
 
         decimal totalExtractionsAmount = await _context.Extractions
-            .Where(e => e.OperationDate.Month == transactionDate.Month)
+            .Where(e => e.OperationDate.Month == transactionDate.Month &&
+                        e.OperationDate.Year == transactionDate.Year &&
+                        e.AccountId == model.OriginAccountId)
             .SumAsync(e => e.Amount);
 
         decimal totalDepositsAmount = await _context.Deposits
-            .Where(d => d.OperationDate.Month == transactionDate.Month)
+            .Where(d => d.OperationDate.Month == transactionDate.Month &&
+                        d.OperationDate.Year == transactionDate.Year &&
+                        d.AccountId == model.OriginAccountId)
             .SumAsync(d => d.Amount);
 
         decimal totalMovementsAmount = await _context.Movements
-            .Where(m => m.TransferredDateTime!.Value.Month == transactionDate.Month)
-            .SumAsync(m => m.Amount);
+           .Where(m => (m.TransferredDateTime!.Value.Month == transactionDate.Month &&
+                        m.TransferredDateTime!.Value.Year == transactionDate.Year &&
+                        m.OriginAccountId == model.OriginAccountId) ||
+                       (m.TransferredDateTime!.Value.Month == transactionDate.Month &&
+                        m.TransferredDateTime!.Value.Year == transactionDate.Year &&
+                        m.DestinationAccountId == model.OriginAccountId))
+           .SumAsync(m => m.Amount);
+
 
         decimal totalTransactionsAmount =
             totalExtractionsAmount + totalDepositsAmount + totalMovementsAmount + model.Amount;
@@ -154,13 +164,41 @@ public class MovementRepository : IMovementRepository
                 return (false, "Transaction Operation limit exceeded.");
             }
         }
+        var transactionDateDestiny = model.TransferredDateTime;
+
+        decimal totalExtractionsAmountDestiny = await _context.Extractions
+            .Where(e => e.OperationDate.Month == transactionDate.Month &&
+                        e.OperationDate.Year == transactionDate.Year &&
+                        e.AccountId == model.DestinationAccountId)
+            .SumAsync(e => e.Amount);
+
+        decimal totalDepositsAmountDestiny = await _context.Deposits
+            .Where(d => d.OperationDate.Month == transactionDate.Month &&
+                        d.OperationDate.Year == transactionDate.Year &&
+                        d.AccountId == model.DestinationAccountId)
+            .SumAsync(d => d.Amount);
+
+        decimal totalMovementsAmountDestiny = await _context.Movements
+           .Where(m => (m.TransferredDateTime!.Value.Month == transactionDate.Month &&
+                        m.TransferredDateTime!.Value.Year == transactionDate.Year &&
+                        m.OriginAccountId == model.DestinationAccountId) ||
+                       (m.TransferredDateTime!.Value.Month == transactionDate.Month &&
+                        m.TransferredDateTime!.Value.Year == transactionDate.Year &&
+                        m.DestinationAccountId == model.DestinationAccountId))
+           .SumAsync(m => m.Amount);
+
+
+        decimal totalTransactionsAmountDestiny =
+            totalExtractionsAmount + totalDepositsAmount + totalMovementsAmount + model.Amount;
+
+
         if (destinationMovement.Type == AccountType.Current)
         {
             var currentAccount = destinationMovement.CurrentAccount;
             if (currentAccount != null && (model.Amount > currentAccount.OperationalLimit
                 || totalTransactionsAmount > currentAccount.OperationalLimit))
             {
-                return (false, "Transaction Operation limit exceeded.");
+                return (false, "Transaction Operation limit exceeded of Destination Account.");
             }
         }
 

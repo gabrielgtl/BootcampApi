@@ -11,7 +11,7 @@ namespace Infrastructure.Mappings
             config.NewConfig<Deposit, TransactionsDTO>()
                 .Map(dest => dest.Id, src => src.Id)
                 .Map(dest => dest.OperationDate, src => src.OperationDate)
-                .Map(dest => dest.Description, src => "")
+                .Map(dest => dest.Description, src => src.Description)
                 .Map(dest => dest.Type, src => "Deposit")
                 .Map(dest => dest.Amount, src => src.Amount)
                 .Map(dest => dest.AccountId, src => src.AccountId);
@@ -19,7 +19,7 @@ namespace Infrastructure.Mappings
             config.NewConfig<Extraction, TransactionsDTO>()
                 .Map(dest => dest.Id, src => src.Id)
                 .Map(dest => dest.OperationDate, src => src.OperationDate)
-                .Map(dest => dest.Description, src => "")
+                .Map(dest => dest.Description, src => src.Description)
                 .Map(dest => dest.Type, src => "Extraction")
                 .Map(dest => dest.Amount, src => src.Amount)
                 .Map(dest => dest.AccountId, src => src.AccountId);
@@ -34,6 +34,7 @@ namespace Infrastructure.Mappings
 
             config.NewConfig<Payment, TransactionsDTO>()
                 .Map(dest => dest.Id, src => src.Id)
+                .Map(dest => dest.OperationDate, src => src.OperationDate)
                 .Map(dest => dest.Description, src => src.Description)
                 .Map(dest => dest.Type, src => "Payment")
                 .Map(dest => dest.Amount, src => src.Amount)

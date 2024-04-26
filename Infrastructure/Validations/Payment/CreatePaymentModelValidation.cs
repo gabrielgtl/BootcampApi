@@ -21,6 +21,10 @@ namespace Infrastructure.Validations.Payment
                         .GreaterThan(0)
                         .WithMessage("AccountId must be greater than zero");
 
+            RuleFor(x => x.OperationDate)
+                .NotNull().WithMessage("Operation date and time cannot be null")
+                .NotEmpty().WithMessage("Operation date and time cannot be empty");
+
         }
     }
 }

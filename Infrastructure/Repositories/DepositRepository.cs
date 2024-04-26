@@ -30,16 +30,25 @@ public class DepositRepository : IDepositRepository
         var transactionDate = model.OperationDate;
 
         decimal totalExtractionsAmount = await _context.Extractions
-            .Where(e => e.OperationDate.Month == transactionDate.Month)
+            .Where(e => e.OperationDate.Month == transactionDate.Month &&
+                        e.OperationDate.Year == transactionDate.Year &&
+                        e.AccountId == model.AccountId)
             .SumAsync(e => e.Amount);
 
         decimal totalDepositsAmount = await _context.Deposits
-            .Where(d => d.OperationDate.Month == transactionDate.Month)
+            .Where(d => d.OperationDate.Month == transactionDate.Month &&
+                        d.OperationDate.Year == transactionDate.Year &&
+                        d.AccountId == model.AccountId)
             .SumAsync(d => d.Amount);
 
         decimal totalMovementsAmount = await _context.Movements
-            .Where(m => m.TransferredDateTime!.Value.Month == transactionDate.Month)
-            .SumAsync(m => m.Amount);
+           .Where(m => (m.TransferredDateTime!.Value.Month == transactionDate.Month &&
+                        m.TransferredDateTime!.Value.Year == transactionDate.Year &&
+                        m.OriginAccountId == model.AccountId) ||
+                       (m.TransferredDateTime!.Value.Month == transactionDate.Month &&
+                        m.TransferredDateTime!.Value.Year == transactionDate.Year &&
+                        m.DestinationAccountId == model.AccountId))
+           .SumAsync(m => m.Amount);
 
         decimal totalTransactionsAmount = 
             totalExtractionsAmount + totalDepositsAmount + totalMovementsAmount + model.Amount;
